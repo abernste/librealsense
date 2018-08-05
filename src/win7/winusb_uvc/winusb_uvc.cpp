@@ -60,7 +60,7 @@ void poll_interrupts(WINUSB_INTERFACE_HANDLE handle, int ep, uint16_t timeout)
         }
         else
         {
-            WinUsb_ResetPipe(handle, 0x84);
+            WinUsb_ResetPipe(handle, ep);
             perror("receiving interrupt_ep bytes failed");
             fprintf(stderr, "Error receiving message.\n");
             return;
