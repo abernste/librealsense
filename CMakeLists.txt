@@ -202,7 +202,7 @@ set(REALSENSE_CPP
 ## Check for Windows Version ##
 if( (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) OR (FORCE_WINUSB_UVC) ) # Windows 7
     if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
-        set(DRIVERS IntelD415_win7.inf
+        set(DRIVERS IntelRealSense_D400_series_win7.inf
                     WdfCoinstaller01011.dll
                     winusbcoinstaller2.dll
                     )
@@ -210,8 +210,8 @@ if( (${CMAKE_SYSTEM_VERSION} EQUAL 6.1) OR (FORCE_WINUSB_UVC) ) # Windows 7
         foreach(item IN LISTS DRIVERS)
             add_custom_command(
                 OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-                COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/src/win7/d415_driver/${item}" "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-                DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${item}"
+                COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/src/win7/drivers/${item}" "${CMAKE_CURRENT_BINARY_DIR}/drivers/${item}"
+                DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/win7/drivers/${item}"
             )
         endforeach()
     endif()
@@ -835,7 +835,8 @@ if (BUILD_WITH_TM2)
     )
 
     include_directories(${LIBTM_INCLUDE_DIR})
-    set(TRACKING_DEVICE_LIBS libtm)
+	link_directories(${LIBTM_LIBRARY} ${INFRA_LIBRARY} ${LIBUSB_LIBRARY})
+    set(TRACKING_DEVICE_LIBS tm infra libusb-1.0)
 
     install(TARGETS libtm
         EXPORT realsense2Targets
