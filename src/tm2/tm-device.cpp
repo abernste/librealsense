@@ -261,10 +261,7 @@ namespace librealsense
             if (tm_profile.sensorIndex == 0)
             {
                 profile->tag_profile(profile_tag::PROFILE_TAG_DEFAULT | profile_tag::PROFILE_TAG_SUPERSET);
-<<<<<<< HEAD
                 results.push_back(profile);
-=======
->>>>>>> Initial commit
             }
         }
 
