@@ -10,8 +10,13 @@ set(LIBTM_SRC_DIR "${LIBTM_ROOT}/libtm/src")
 set(LIBTM_RESOURCES_DIR "${LIBTM_ROOT}/resources")
 
 include(versions.cmake)
+
 include(libtm/config.cmake)
 include(infra/config.cmake)
+include(versions.cmake)
+
+set(LIBTM_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")	
+set(LIBTM_RESOURCES_DIR "${LIBTM_ROOT}/resources")
 
 add_definitions(-DBUILD_STATIC)
 
