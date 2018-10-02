@@ -13,11 +13,7 @@ set(LIBVERSION ${LIBTM_VERSION_MAJOR}.${LIBTM_VERSION_MINOR}.${LIBTM_VERSION_PAT
 
 # Retrieve Git branch name
 execute_process(COMMAND git rev-parse --abbrev-ref HEAD
-<<<<<<< HEAD
                 WORKING_DIRECTORY "${LIBTM_ROOT}"
-=======
-                WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
->>>>>>> Add libtm source code to librealsense solution (#27)
                 OUTPUT_VARIABLE GIT_BRANCH
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -29,17 +25,5 @@ MESSAGE("Creating version file ${PROJECT_SOURCE_DIR}/src/Version.h")
 configure_file("${PROJECT_SOURCE_DIR}/src/Version.h.in" "${PROJECT_SOURCE_DIR}/src/Version.h")
 configure_file("${PROJECT_SOURCE_DIR}/src/version.rc.in" "${PROJECT_SOURCE_DIR}/src/version.rc")
 
-<<<<<<< HEAD
 # Add subdirectory to the build
-=======
-# Add include directories to the search path
-include_directories(${LIBTM_INCLUDE_DIR})
-SET(INSTALL_PATH ${CMAKE_INSTALL_PREFIX})
-install(DIRECTORY ${LIBTM_INCLUDE_DIR} DESTINATION ${INSTALL_PATH})
-
-include_directories("infra")
-
-# Add subdirectory to the build
-add_subdirectory(infra)
->>>>>>> Add libtm source code to librealsense solution (#27)
 add_subdirectory(src)
