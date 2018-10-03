@@ -865,7 +865,7 @@ public:
             else
             {
                 /* Check if received min frames of runtime - 500 msec */
-                if (pose[i].frames < ((pose[i].enabled * pose[i].outputMode * (std::min((uint16_t)100, pose[i].frameRate)) * poseRunTimeMsecMin) / 1000))
+                if (pose[i].frames < ((pose[i].enabled * pose[i].outputMode * ((std::min)((uint16_t)100, pose[i].frameRate)) * poseRunTimeMsecMin) / 1000))
                 {
                     LOGE("Error: Got too few pose[%d] frames [Expected %d] [Actual %d]", i, ((pose[i].enabled * pose[i].outputMode * pose[i].frameRate * poseRunTimeMsec) / 1000), pose[i].frames);
                     checkerFailed = true;
@@ -874,7 +874,7 @@ public:
                 if (pose[i].frames > 0)
                 {
                     /* Check if received max frames of runtime + 500 msec */
-                    if (pose[i].frames > ((pose[i].enabled * pose[i].outputMode * (std::max((uint16_t)100, pose[i].frameRate)) * poseRunTimeMsecMax) / 1000))
+                    if (pose[i].frames > ((pose[i].enabled * pose[i].outputMode * ((std::max)((uint16_t)100, pose[i].frameRate)) * poseRunTimeMsecMax) / 1000))
                     {
                         LOGE("Error: Got too many pose[%d] frames [Expected %d] [Actual %d]", i, ((pose[i].enabled * pose[i].outputMode * pose[i].frameRate * poseRunTimeMsec) / 1000), pose[i].frames);
                         checkerFailed = true;
