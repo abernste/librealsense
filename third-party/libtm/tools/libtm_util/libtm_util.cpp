@@ -149,7 +149,7 @@ public:
 
     void setTime(TrackingData::TimestampedData timeStampData)
     {
-        hostCurrentSystemTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+        hostCurrentSystemTime = systemTime();
         if (loadTime.host == 0)
         {
             loadTime.host = hostCurrentSystemTime;
@@ -1018,7 +1018,7 @@ public:
     void inc(TrackingData::GyroFrame& gyroFrame)
     {
         gyro[gyroFrame.sensorIndex].frames++;
-        gyro[gyroFrame.sensorIndex].totalLatency += ns2ms(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count() - gyroFrame.systemTimestamp);
+        gyro[gyroFrame.sensorIndex].totalLatency += ns2ms(systemTime() - gyroFrame.systemTimestamp);
 
         int64_t offset = (int64_t)gyroFrame.frameId - (int64_t)gyro[gyroFrame.sensorIndex].prevFrameId;
         if (gyro[gyroFrame.sensorIndex].prevFrameTimeStamp != 0)
@@ -1051,7 +1051,7 @@ public:
     void inc(TrackingData::VelocimeterFrame& velocimeterFrame)
     {
         velocimeter[velocimeterFrame.sensorIndex].frames++;
-        velocimeter[velocimeterFrame.sensorIndex].totalLatency += ns2ms(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count() - velocimeterFrame.systemTimestamp);
+        velocimeter[velocimeterFrame.sensorIndex].totalLatency += ns2ms(systemTime() - velocimeterFrame.systemTimestamp);
 
         int64_t offset = (int64_t)velocimeterFrame.frameId - (int64_t)velocimeter[velocimeterFrame.sensorIndex].prevFrameId;
         if (velocimeter[velocimeterFrame.sensorIndex].prevFrameTimeStamp != 0)
@@ -1084,7 +1084,7 @@ public:
     void inc(TrackingData::AccelerometerFrame& accelerometerFrame)
     {
         accelerometer[accelerometerFrame.sensorIndex].frames++;
-        accelerometer[accelerometerFrame.sensorIndex].totalLatency += ns2ms(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count() - accelerometerFrame.systemTimestamp);
+        accelerometer[accelerometerFrame.sensorIndex].totalLatency += ns2ms(systemTime() - accelerometerFrame.systemTimestamp);
 
         int64_t offset = (int64_t)accelerometerFrame.frameId - (int64_t)accelerometer[accelerometerFrame.sensorIndex].prevFrameId;
         if (accelerometer[accelerometerFrame.sensorIndex].prevFrameTimeStamp != 0)
@@ -1118,7 +1118,7 @@ public:
     void inc(TrackingData::PoseFrame& poseFrame)
     {
         pose[poseFrame.sourceIndex].frames++;
-        pose[poseFrame.sourceIndex].totalLatency += ns2ms(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count() - poseFrame.systemTimestamp);
+        pose[poseFrame.sourceIndex].totalLatency += ns2ms(systemTime() - poseFrame.systemTimestamp);
 
         if ((gConfiguration.errorCheck == true) && isnan(poseFrame.translation.x) && (poseFrame.trackerConfidence != 0))
         {
@@ -1162,7 +1162,7 @@ public:
     void inc(TrackingData::VideoFrame& videoFrame)
     {
         video[videoFrame.sensorIndex].frames++;
-        video[videoFrame.sensorIndex].totalLatency += ns2ms(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count() - videoFrame.systemTimestamp);
+        video[videoFrame.sensorIndex].totalLatency += ns2ms(systemTime() - videoFrame.systemTimestamp);
 
         int64_t offset = (int64_t)videoFrame.frameId - (int64_t)video[videoFrame.sensorIndex].prevFrameId;
         if (video[videoFrame.sensorIndex].prevFrameTimeStamp != 0)
@@ -1195,7 +1195,7 @@ public:
     void inc(TrackingData::ControllerFrame& controllerFrame)
     {
         controller[controllerFrame.sensorIndex].frames++;
-        controller[controllerFrame.sensorIndex].totalLatency += ns2ms(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count() - controllerFrame.systemTimestamp);
+        controller[controllerFrame.sensorIndex].totalLatency += ns2ms(systemTime() - controllerFrame.systemTimestamp);
     }
 
     /* Add new controller discovery event statistics and increase controller discovery event frame count */
@@ -1220,7 +1220,7 @@ public:
     void inc(TrackingData::RssiFrame& rssiFrame)
     {
         rssi[rssiFrame.sensorIndex].frames++;
-        rssi[rssiFrame.sensorIndex].totalLatency += ns2ms(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count() - rssiFrame.systemTimestamp);
+        rssi[rssiFrame.sensorIndex].totalLatency += ns2ms(systemTime() - rssiFrame.systemTimestamp);
     }
 
     /* Increase Localization Get/Set frame count */
