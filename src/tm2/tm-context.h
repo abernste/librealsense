@@ -16,13 +16,14 @@ namespace librealsense
     {
     public:
         tm2_context(context* ctx);
-        ~tm2_context();
+        virtual ~tm2_context();
         std::shared_ptr<perc::TrackingManager> get_manager() const;
         std::vector<perc::TrackingDevice*> query_devices() const;
         signal<tm2_context, std::shared_ptr<tm2_info>, std::shared_ptr<tm2_info>> on_device_changed;
         // TrackingManager::Listener
         void onStateChanged(perc::TrackingManager::EventType state, perc::TrackingDevice* device, perc::TrackingData::DeviceInfo deviceInfo) override;
         void onError(perc::Status error, perc::TrackingDevice*) override;
+        void set_on_device_detach_callback(devices_changed_callback_ptr callback);
     private:
         void thread_proc();
         friend class connect_disconnect_listener;
@@ -30,7 +31,6 @@ namespace librealsense
         std::shared_ptr<perc::TrackingManager> _manager;
         std::vector<perc::TrackingDevice*> _devices;
         context* _ctx;
-
         //_is_disposed is used in _t, keep this order:
         std::atomic_bool _is_disposed;
         std::thread _t;

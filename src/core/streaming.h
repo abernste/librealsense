@@ -31,9 +31,10 @@ namespace librealsense
 
     typedef enum profile_tag
     {
-        PROFILE_TAG_ANY = 0,
-        PROFILE_TAG_SUPERSET = 1, // to be included in enable_all
-        PROFILE_TAG_DEFAULT = 2,  // to be included in default pipeline start
+        PROFILE_TAG_ANY =           0x0000,
+        PROFILE_TAG_SUPERSET =      0x0001,  // to be included in enable_all
+        PROFILE_TAG_DEFAULT =       0x0002,  // to be included in default pipeline start
+        PROFILE_TAG_DEFAULT_VIDEO = 0x0004,  // to be included in default video pipeline start
     } profile_tag;
 
     struct tagged_profile

@@ -27,7 +27,7 @@ class device_container
 
 public:
 
-    void enable_device(rs2::device dev)
+    void enable_device(rs2::context ctx, rs2::device dev)
     {
         std::string serial_number(dev.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER));
         std::lock_guard<std::mutex> lock(_mutex);
@@ -43,7 +43,7 @@ public:
             return;
         }
         // Create a pipeline from the given device
-        rs2::pipeline p;
+        rs2::pipeline p(ctx);
         rs2::config c;
         c.enable_device(serial_number);
         // Start the pipeline with the configuration
@@ -159,14 +159,14 @@ int main(int argc, char * argv[]) try
         connected_devices.remove_devices(info);
         for (auto&& dev : info.get_new_devices())
         {
-            connected_devices.enable_device(dev);
+            connected_devices.enable_device(ctx, dev);
         }
     });
 
     // Initial population of the device list
     for (auto&& dev : ctx.query_devices()) // Query the list of connected RealSense devices
     {
-        connected_devices.enable_device(dev);
+        connected_devices.enable_device(ctx, dev);
     }
 
     while (app) // Application still alive?

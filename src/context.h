@@ -150,7 +150,7 @@ namespace librealsense
         std::map<uint64_t, devices_changed_callback_ptr> _devices_changed_callbacks;
 
 
-        devices_changed_callback_ptr _devices_changed_callback;
+        //std::map<uint64_t, devices_changed_callback_ptr> _devices_changed_callbacks;
         std::map<int, std::weak_ptr<const stream_interface>> _streams;
         std::map<int, std::map<int, std::weak_ptr<lazy<rs2_extrinsics>>>> _extrinsics;
         std::mutex _streams_mutex, _devices_changed_callbacks_mtx;

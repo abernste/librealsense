@@ -9,11 +9,13 @@
 #include "../core/motion.h"
 #include "TrackingManager.h"
 #include "../media/playback/playback_device.h"
-
+#include <librealsense2/hpp/rs_context.hpp>
 
 namespace librealsense
 {
     class tm2_sensor;
+
+    typedef rs2::devices_changed_callback<std::function<void(rs2::event_information& info)>> tm2_devices_changed_callback;
 
     class tm2_device : public virtual device, public tm2_extensions
     {

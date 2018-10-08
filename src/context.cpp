@@ -95,7 +95,7 @@ namespace librealsense
                      const char* section,
                      rs2_recording_mode mode,
                      std::string min_api_version)
-        : _devices_changed_callback(nullptr, [](rs2_devices_changed_callback*){})
+        //: _devices_changed_callback(nullptr, [](rs2_devices_changed_callback*){})
     {
         LOG_DEBUG("Librealsense " << std::string(std::begin(rs2_api_version),std::end(rs2_api_version)));
 
@@ -392,39 +392,62 @@ namespace librealsense
                 LOG_DEBUG("\nDevice connected:\n\n" << std::string(devices_info_added[i]->get_device_data()));
             }
 
-            std::map<uint64_t, devices_changed_callback_ptr> devices_changed_callbacks;
-            {
-                std::lock_guard<std::mutex> lock(_devices_changed_callbacks_mtx);
-                devices_changed_callbacks = _devices_changed_callbacks;
-            }
+            //std::map<uint64_t, devices_changed_callback_ptr> devices_changed_callbacks;
+            //{
+            //    std::lock_guard<std::mutex> lock(_devices_changed_callbacks_mtx);
+            //    devices_changed_callbacks = _devices_changed_callbacks;
+            //}
 
-            for (auto& kvp : devices_changed_callbacks)
-            {
-                try
-                {
-                    kvp.second->on_devices_changed(new rs2_device_list({ shared_from_this(), rs2_devices_info_removed }),
-                                                   new rs2_device_list({ shared_from_this(), rs2_devices_info_added }));
-                }
-                catch (...)
-                {
-                    LOG_ERROR("Exception thrown from user callback handler");
-                }
-            }
+            //for (auto& kvp : devices_changed_callbacks)
+            //{
+            //    try
+            //    {
+            //        kvp.second->on_devices_changed(new rs2_device_list({ shared_from_this(), rs2_devices_info_removed }),
+            //                                       new rs2_device_list({ shared_from_this(), rs2_devices_info_added }));
+
+            //        //kvp.second->on_devices_changed(new rs2_device_list({ shared_from_this(), rs2_devices_info_removed }),
+            //        //    new rs2_device_list({ shared_from_this(), rs2_devices_info_added }));
+            //    }
+            //    catch (...)
+            //    {
+            //        LOG_ERROR("Exception thrown from user callback handler");
+            //    }
+            //}
+
+            ////for (auto& kvp : devices_changed_callbacks)
+            ////{
+            ////    try
+            ////    {
+            ////        kvp.second->on_devices_changed(new rs2_device_list({ shared_from_this(), rs2_devices_info_removed }),
+            ////            new rs2_device_list({ shared_from_this(), rs2_devices_info_added }));
+            ////    }
+            ////    catch (...)
+            ////    {
+            ////        LOG_ERROR("Exception thrown from user callback handler");
+            ////    }
+            ////}
 
             raise_devices_changed(rs2_devices_info_removed, rs2_devices_info_added);
         }
     }
     void context::raise_devices_changed(const std::vector<rs2_device_info>& removed, const std::vector<rs2_device_info>& added)
     {
-        if (_devices_changed_callback)
+        std::map<uint64_t, devices_changed_callback_ptr> devices_changed_callbacks;
+        {
+            std::lock_guard<std::mutex> lock(_devices_changed_callbacks_mtx);
+            devices_changed_callbacks = _devices_changed_callbacks;
+        }
+
+        for (auto& kvp : devices_changed_callbacks)
         {
             try
             {
-                _devices_changed_callback->on_devices_changed(new rs2_device_list({ shared_from_this(), removed }),
+                kvp.second->on_devices_changed(new rs2_device_list({ shared_from_this(), removed }),
                     new rs2_device_list({ shared_from_this(), added }));
             }
-            catch (...)
+            catch (std::exception& e)
             {
+                std::string str = e.what();
                 LOG_ERROR("Exception thrown from user callback handler");
             }
         }
@@ -442,7 +465,11 @@ namespace librealsense
     {
         _device_watcher->stop();
 
-        _devices_changed_callback = std::move(callback);
+        register_internal_device_callback(callback);
+        //auto callback_id = unique_id::generate_id();
+        //_devices_changed_callbacks.insert(std::make_pair(callback_id, std::move(callback)));
+
+        //_devices_changed_callback = std::move(callback);
         _device_watcher->start([this](platform::backend_device_group old, platform::backend_device_group curr)
         {
             on_device_changed(old, curr, _playback_devices, _playback_devices);
@@ -452,7 +479,9 @@ namespace librealsense
     void context::unregister_internal_device_callback(uint64_t cb_id)
     {
         std::lock_guard<std::mutex> lock(_devices_changed_callbacks_mtx);
-        _devices_changed_callbacks.erase(cb_id);
+        unregister_internal_device_callback(cb_id);
+
+        //_devices_changed_callbacks.erase(cb_id);
     }
 
     std::vector<platform::uvc_device_info> filter_by_product(const std::vector<platform::uvc_device_info>& devices, const std::set<uint16_t>& pid_list)

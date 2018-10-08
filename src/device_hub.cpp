@@ -25,6 +25,15 @@ namespace librealsense
                     break;
                 }
             }
+
+            for (auto tm2 : data.tm2_devices)
+            {
+                if (vid == 0) //add vid / pid
+                {
+                    result.push_back(dev);
+                    break;
+                }
+            }
         }
         return result;
     }

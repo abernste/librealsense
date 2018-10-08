@@ -11,6 +11,7 @@
 #include "media/ros/ros_reader.h"
 #include "controller_event_serializer.h"
 
+
 using namespace perc;
 using namespace std::chrono;
 
@@ -210,7 +211,7 @@ namespace librealsense
             profile->set_unique_id(environment::get_instance().generate_stream_id());
             if (tm_profile.sensorIndex == 0 || tm_profile.sensorIndex == 1)
             {
-                profile->tag_profile(profile_tag::PROFILE_TAG_DEFAULT | profile_tag::PROFILE_TAG_SUPERSET);
+                profile->tag_profile(profile_tag::PROFILE_TAG_DEFAULT_VIDEO | profile_tag::PROFILE_TAG_DEFAULT | profile_tag::PROFILE_TAG_SUPERSET);
             }
             stream_profile sp = { stream, profile->get_stream_index(), p.width, p.height, p.fps, profile->get_format() };
             auto intrinsics = get_intrinsics(sp);
@@ -595,10 +596,15 @@ namespace librealsense
             auto& loopback_sensor = _loopback->get_sensor(0);
             loopback_sensor.stop();
         }
-        auto status = _tm_dev->Stop();
-        if (status != Status::SUCCESS)
+
+        if (_tm_dev)
         {
-            throw io_exception("Failed to stop TM2 camera");
+
+            auto status = _tm_dev->Stop();
+            if (status != Status::SUCCESS)
+            {
+                throw io_exception("Failed to stop TM2 camera");
+            }
         }
         raise_on_before_streaming_changes(false);
         _is_streaming = false;
@@ -1008,9 +1014,14 @@ namespace librealsense
         add_sensor(_sensor);
 
         _sensor->register_option(rs2_option::RS2_OPTION_ASIC_TEMPERATURE, std::make_shared<asic_temperature_option>(*_sensor));
-        _sensor->register_option(rs2_option::RS2_OPTION_MOTION_MODULE_TEMPERATURE, std::make_shared<motion_temperature_option>(*_sensor));
+        _sensor->register_option(rs2_option::RS2_OPTION_MOTION_MODULE_TEMPERATURE, std::make_shared<motion_temperature_option>(*_sensor));        
 
         //For manual testing: enable_loopback("C:\\dev\\recording\\tm2.bag");
+        auto cb = new tm2_devices_changed_callback([&](rs2::event_information& info)
+        {
+            _sensor->dispose();
+        });
+        ctx->set_devices_changed_callback({ cb,  [](rs2_devices_changed_callback* p) { p->release(); } });
     }
 
     tm2_device::~tm2_device()
