@@ -38,11 +38,11 @@ using namespace perc;
 #define MAX_LOG_CONTAINERS 2
 
 // Default priority mask - ALL enabled
-static int s_PriorityMask = /*LOG_PRI2MASK(LOG_VERBOSE) | */
+static int s_PriorityMask = /*LOG_PRI2MASK(LOG_VERBOSE) | 
 LOG_PRI2MASK(LOG_DEBUG) |
 LOG_PRI2MASK(LOG_TRACE) |
 LOG_PRI2MASK(LOG_INFO) |
-LOG_PRI2MASK(LOG_WARN) |
+LOG_PRI2MASK(LOG_WARN) |*/
 LOG_PRI2MASK(LOG_ERROR);
 
 class AdvancedLog : public TrackingData::Log {

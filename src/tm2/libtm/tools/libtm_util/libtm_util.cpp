@@ -1,5 +1,4 @@
 #define LOG_TAG "libtmutil"
-#include "Log.h"
 #include "TrackingManager.h"
 #include "TrackingSerializer.h"
 #include <algorithm>
@@ -619,33 +618,33 @@ public:
 
     void print()
     {
-        LOGD("Statistics");
-        LOGD("--------------------------+-------------------+--------+---------+--------+------------+----------+----------+--------");
-        LOGD("           Type           |       Info        | Frames | Enabled | Output | Latency    | Run Time | Expected | Actual ");
-        LOGD("                          |                   | PerSec |         | Mode   | AVG (mSec) | (mSec)   | Frames   | Frames ");
-        LOGD("--------------------------+-------------------+--------+---------+--------+------------+----------+----------+--------");
+        printf("Statistics\n");
+        printf("--------------------------+-------------------+--------+---------+--------+------------+----------+----------+--------\n");
+        printf("           Type           |       Info        | Frames | Enabled | Output | Latency    | Run Time | Expected | Actual \n");
+        printf("                          |                   | PerSec |         | Mode   | AVG (mSec) | (mSec)   | Frames   | Frames \n");
+        printf("--------------------------+-------------------+--------+---------+--------+------------+----------+----------+--------\n");
 
         for (uint8_t i = 0; i < VideoProfileMax; i++)
         {
-            LOGD(" Video[%01d]                 | %-17s | %-6d | 0x%01X     | 0x%01X    | %-10"PRId64" | %-8d | %-8d | %d", i, (i > VideoProfile1) ? "Low Exposure " : "High Exposure",
+            printf(" Video[%01d]                 | %-17s | %-6d | 0x%01X     | 0x%01X    | %10lld | %-8d | %-8d | %lld\n", i, (i > VideoProfile1) ? "Low Exposure " : "High Exposure",
                 video[i].frameRate, video[i].enabled, video[i].outputMode, (video[i].frames > 0) ? (video[i].totalLatency / video[i].frames) : 0, runTime[HMD].diffMsec, (video[i].frameRate * video[i].enabled * video[i].outputMode *  runTime[HMD].diffMsec) / 1000, video[i].frames);
         }
 
         for (uint8_t i = 0; i < GyroProfileMax; i++)
         {
-            LOGD(" Gyro[%01d]                  | %-17s | %-6d | 0x%01X     | 0x%01X    | %-10"PRId64" | %-8d | %-8d | %d", i, (i > GyroProfile0) ? ((i > GyroProfile1) ? "Controller 2" : "Controller 1") : "HMD",
+            printf(" Gyro[%01d]                  | %-17s | %-6d | 0x%01X     | 0x%01X    | %10lld | %-8d | %-8d | %lld\n", i, (i > GyroProfile0) ? ((i > GyroProfile1) ? "Controller 2" : "Controller 1") : "HMD",
                 gyro[i].frameRate, gyro[i].enabled, gyro[i].outputMode, (gyro[i].frames > 0) ? (gyro[i].totalLatency / gyro[i].frames) : 0, runTime[i].diffMsec, (gyro[i].frameRate * gyro[i].enabled * gyro[i].outputMode * runTime[i].diffMsec) / 1000, gyro[i].frames);
         }
 
         for (uint8_t i = 0; i < AccelerometerProfileMax; i++)
         {
-            LOGD(" Accelerometer[%01d]         | %-17s | %-6d | 0x%01X     | 0x%01X    | %-10"PRId64" | %-8d | %-8d | %d", i, (i > AccelerometerProfile0) ? ((i > AccelerometerProfile1) ? "Controller 2" : "Controller 1") : "HMD",
+            printf(" Accelerometer[%01d]         | %-17s | %-6d | 0x%01X     | 0x%01X    | %10lld | %-8d | %-8d | %lld\n", i, (i > AccelerometerProfile0) ? ((i > AccelerometerProfile1) ? "Controller 2" : "Controller 1") : "HMD",
                 accelerometer[i].frameRate, accelerometer[i].enabled, accelerometer[i].outputMode, (accelerometer[i].frames > 0) ? (accelerometer[i].totalLatency / accelerometer[i].frames) : 0, runTime[i].diffMsec, (accelerometer[i].frameRate * accelerometer[i].enabled * accelerometer[i].outputMode * runTime[i].diffMsec) / 1000, accelerometer[i].frames);
         }
 
         for (uint8_t i = 0; i < VelocimeterProfileMax; i++)
         {
-            LOGD(" Velocimeter[%01d]           | External Sensor   |        | 0x%01X     | 0x%01X    | %-10"PRId64" | %-8d |          | %d", i, 
+            printf(" Velocimeter[%01d]           | External Sensor   |        | 0x%01X     | 0x%01X    | %10lld | %-8d |          | %lld\n", i, 
                 velocimeter[i].enabled, velocimeter[i].outputMode, (velocimeter[i].frames > 0) ? (velocimeter[i].totalLatency / velocimeter[i].frames) : 0, runTime[HMD].diffMsec, velocimeter[i].frames);
         }
 
@@ -658,35 +657,35 @@ public:
                 poseRunTimeMsec = (runTime[i].diffMsec - MAX_FIRST_POSE_DELAY_MSEC);
             }
 
-            LOGD(" Pose[%01d]                  | %-17s | %-6d | 0x%01X     | 0x%01X    | %-10"PRId64" | %-8d | %-8d | %d", i, (i > SixDofProfile0) ? ((i > SixDofProfile1) ? "Controller 2" : "Controller 1") : "HMD",
+            printf(" Pose[%01d]                  | %-17s | %-6d | 0x%01X     | 0x%01X    | %10lld | %-8d | %-8d | %lld\n", i, (i > SixDofProfile0) ? ((i > SixDofProfile1) ? "Controller 2" : "Controller 1") : "HMD",
                 pose[i].frameRate, pose[i].enabled, pose[i].outputMode, (pose[i].frames > 0) ? (pose[i].totalLatency / pose[i].frames) : 0, runTime[i].diffMsec, (pose[i].frameRate * pose[i].enabled * pose[i].outputMode * poseRunTimeMsec) / 1000, pose[i].frames);
         }
 
         for (auto it = controllerDiscoveryEventVector.begin(); it != controllerDiscoveryEventVector.end(); it++)
         {
-            LOGD(" ControllerDiscoveryEvent | %02X:%02X:%02X:%02X:%02X:%02X |        |         |        |            |          |          | %d",
+            printf(" ControllerDiscoveryEvent | %02X:%02X:%02X:%02X:%02X:%02X |        |         |        |            |          |          | %lld\n",
                 (*it).get()->macAddress[0], (*it).get()->macAddress[1], (*it).get()->macAddress[2], (*it).get()->macAddress[3], (*it).get()->macAddress[4], (*it).get()->macAddress[5], (*it).get()->frames);
         }
 
         if (controllerDiscoveryEventVector.size() == 0)
         {
-            LOGD(" ControllerDiscoveryEvent | All controllers   |        |         |        |            |          |          | 0");
+            printf(" ControllerDiscoveryEvent | All controllers   |        |         |        |            |          |          | 0\n");
         }
 
         for (uint8_t i = Controller1; i < ProfileTypeMax; i++)
         {
-            LOGD(" Controller[%01d]            | Controller %01d      |        |         |        |            |          |          | %d", i, i, controller[i].frames);
+            printf(" Controller[%01d]            | Controller %01d      |        |         |        |            |          |          | %lld\n", i, i, controller[i].frames);
         }
 
         for (uint8_t i = Controller1; i < ProfileTypeMax; i++)
         {
-            LOGD(" Rssi[%01d]                  | Controller %01d      |        |         |        |            |          |          | %d", i, i, rssi[i].frames);
+            printf(" Rssi[%01d]                  | Controller %01d      |        |         |        |            |          |          | %lld\n", i, i, rssi[i].frames);
         }
 
-        LOGD(" Errors                   | All error types   |        |         |        |            |          |          | %d", error.count);
-        LOGD(" Statuses                 | All status types  |        |         |        |            |          |          | %d", status.count);
-        LOGD(" Led Event                | Led Event         |        |         |        |            |          |          | %d", led.count);
-        LOGD("--------------------------+-------------------+--------+---------+--------+------------+----------+----------+--------");
+        printf(" Errors                   | All error types   |        |         |        |            |          |          | %d\n", error.count);
+        printf(" Statuses                 | All status types  |        |         |        |            |          |          | %d\n", status.count);
+        printf(" Led Event                | Led Event         |        |         |        |            |          |          | %d\n", led.count);
+        printf("--------------------------+-------------------+--------+---------+--------+------------+----------+----------+--------\n");
     }
 
     /* Check frame count and latency for video/gyro/accelerometer/6dof and check error events */
@@ -698,7 +697,7 @@ public:
             /* Check if video sensor started */
             if ((video[i].enabled) && (video[i].outputMode) && (runTime[HMD].diffMsec == 0))
             {
-                LOGE("Error: Enabled video[%d] didn't start", HMD);
+                printf("Error: Enabled video[%d] didn't start\n", HMD);
                 checkerFailed = true;
             }
             else
@@ -706,7 +705,7 @@ public:
                 /* Check if received min frames of runtime - 1 sec */
                 if (video[i].frames < (video[i].enabled * video[i].outputMode * video[i].frameRate * (runTime[HMD].diffMsec / 1000 - 1)))
                 {
-                    LOGE("Error: Got too few video[%d] frames [Min Expected %d] [Actual %d]", i, (video[i].enabled * video[i].outputMode * video[i].frameRate * (runTime[HMD].diffMsec / 1000 - 1)), video[i].frames);
+                    printf("Error: Got too few video[%d] frames [Min Expected %d] [Actual %lld]\n", i, (video[i].enabled * video[i].outputMode * video[i].frameRate * (runTime[HMD].diffMsec / 1000 - 1)), video[i].frames);
                     checkerFailed = true;
                 }
 
@@ -715,28 +714,28 @@ public:
                     /* Check if received max frames of runtime + 1 sec */
                     if (video[i].frames > (video[i].enabled * video[i].outputMode * video[i].frameRate * (runTime[HMD].diffMsec / 1000 + 1)))
                     {
-                        LOGE("Error: Got too many video[%d] frames [Max Expected %d] [Actual %d]", i, (video[i].enabled * video[i].outputMode * video[i].frameRate * (runTime[HMD].diffMsec / 1000 + 1)), video[i].frames);
+                        printf("Error: Got too many video[%d] frames [Max Expected %d] [Actual %lld]\n", i, (video[i].enabled * video[i].outputMode * video[i].frameRate * (runTime[HMD].diffMsec / 1000 + 1)), video[i].frames);
                         checkerFailed = true;
                     }
 
                     /* Check latency less than 100 msec */
                     if ((video[i].totalLatency / video[i].frames) > MAX_FRAME_LATENCY_MSEC)
                     {
-                        LOGE("Error: video[%d] frame motion->host latency is too high (%d)", i, (video[i].totalLatency / video[i].frames));
+                        printf("Error: video[%d] frame motion->host latency is too high (%lld)\n", i, (video[i].totalLatency / video[i].frames));
                         checkerFailed = true;
                     }
 
                     /* Check frame drops */
                     if (video[i].frameDrops > 0)
                     {
-                        LOGE("Error: video[%d] frame drops occurred (%d)", i, video[i].frameDrops);
+                        printf("Error: video[%d] frame drops occurred (%lld)\n", i, video[i].frameDrops);
                         checkerFailed = true;
                     }
 
                     /* Check frame reorder */
                     if (video[i].frameReorder > 0)
                     {
-                        LOGE("Error: video[%d] frame reorder occurred (%d)", i, video[i].frameReorder);
+                        printf("Error: video[%d] frame reorder occurred (%lld)\n", i, video[i].frameReorder);
                         checkerFailed = true;
                     }
                 }
@@ -748,7 +747,7 @@ public:
             /* Check if gyro sensor started */
             if ((gyro[i].enabled) && (gyro[i].outputMode) && (runTime[i].diffMsec == 0))
             {
-                LOGE("Error: Enabled gyro[%d] didn't start", i);
+                printf("Error: Enabled gyro[%d] didn't start\n", i);
                 checkerFailed = true;
             }
             else
@@ -756,7 +755,7 @@ public:
                 /* Check if received min frames of runtime - 1 sec */
                 if (gyro[i].frames < (gyro[i].enabled * gyro[i].outputMode * gyro[i].frameRate * (runTime[i].diffMsec / 1000 - 1)))
                 {
-                    LOGE("Error: Got too few gyro[%d] frames [Min Expected %d] [Actual %d]", i, (gyro[i].enabled * gyro[i].outputMode * gyro[i].frameRate * (runTime[i].diffMsec / 1000 - 1)), gyro[i].frames);
+                    printf("Error: Got too few gyro[%d] frames [Min Expected %d] [Actual %lld]\n", i, (gyro[i].enabled * gyro[i].outputMode * gyro[i].frameRate * (runTime[i].diffMsec / 1000 - 1)), gyro[i].frames);
                     checkerFailed = true;
                 }
 
@@ -765,28 +764,28 @@ public:
                     /* Check if received max frames of runtime + 1 sec */
                     if (gyro[i].frames > (gyro[i].enabled * gyro[i].outputMode * gyro[i].frameRate * (runTime[i].diffMsec / 1000 + 1)))
                     {
-                        LOGE("Error: Got too many gyro[%d] frames [Max Expected %d] [Actual %d]", i, (gyro[i].enabled * gyro[i].outputMode * gyro[i].frameRate * (runTime[i].diffMsec / 1000 + 1)), gyro[i].frames);
+                        printf("Error: Got too many gyro[%d] frames [Max Expected %d] [Actual %lld]\n", i, (gyro[i].enabled * gyro[i].outputMode * gyro[i].frameRate * (runTime[i].diffMsec / 1000 + 1)), gyro[i].frames);
                         checkerFailed = true;
                     }
 
                     /* Check latency less than 100 msec */
                     if ((gyro[i].totalLatency / gyro[i].frames) > MAX_FRAME_LATENCY_MSEC)
                     {
-                        LOGE("Error: gyro[%d] frame motion->host latency is too high (%d)", i, (gyro[i].totalLatency / gyro[i].frames));
+                        printf("Error: gyro[%d] frame motion->host latency is too high (%lld)\n", i, (gyro[i].totalLatency / gyro[i].frames));
                         checkerFailed = true;
                     }
 
                     /* Check frame drops */
                     if (gyro[i].frameDrops > 0)
                     {
-                        LOGE("Error: gyro[%d] frame drops occurred (%d)", i, gyro[i].frameDrops);
+                        printf("Error: gyro[%d] frame drops occurred (%lld)\n", i, gyro[i].frameDrops);
                         checkerFailed = true;
                     }
 
                     /* Check frame reorder */
                     if (gyro[i].frameReorder > 0)
                     {
-                        LOGE("Error: gyro[%d] frame reorder occurred (%d)", i, gyro[i].frameReorder);
+                        printf("Error: gyro[%d] frame reorder occurred (%lld)\n", i, gyro[i].frameReorder);
                         checkerFailed = true;
                     }
                 }
@@ -798,7 +797,7 @@ public:
             /* Check if accelerometer sensor started */
             if ((accelerometer[i].enabled) && (accelerometer[i].outputMode) && (runTime[i].diffMsec == 0))
             {
-                LOGE("Error: Enabled accelerometer[%d] didn't start", i);
+                printf("Error: Enabled accelerometer[%d] didn't start\n", i);
                 checkerFailed = true;
             }
             else
@@ -806,7 +805,7 @@ public:
                 /* Check if received min frames of runtime - 1 sec */
                 if (accelerometer[i].frames < (accelerometer[i].enabled * accelerometer[i].outputMode * accelerometer[i].frameRate * (runTime[i].diffMsec / 1000 - 1)))
                 {
-                    LOGE("Error: Got too few accelerometer[%d] frames [Min Expected %d] [Actual %d]", i, (accelerometer[i].enabled * accelerometer[i].outputMode * accelerometer[i].frameRate * (runTime[i].diffMsec / 1000 - 1)), accelerometer[i].frames);
+                    printf("Error: Got too few accelerometer[%d] frames [Min Expected %d] [Actual %lld]\n", i, (accelerometer[i].enabled * accelerometer[i].outputMode * accelerometer[i].frameRate * (runTime[i].diffMsec / 1000 - 1)), accelerometer[i].frames);
                     checkerFailed = true;
                 }
 
@@ -815,28 +814,28 @@ public:
                     /* Check if received max frames of runtime + 1 sec */
                     if (accelerometer[i].frames > (accelerometer[i].enabled * accelerometer[i].outputMode * accelerometer[i].frameRate * (runTime[i].diffMsec / 1000 + 1)))
                     {
-                        LOGE("Error: Got too many accelerometer[%d] frames [Max Expected %d] [Actual %d]", i, (accelerometer[i].enabled * accelerometer[i].outputMode * accelerometer[i].frameRate * (runTime[i].diffMsec / 1000 + 1)), accelerometer[i].frames);
+                        printf("Error: Got too many accelerometer[%d] frames [Max Expected %d] [Actual %lld]\n", i, (accelerometer[i].enabled * accelerometer[i].outputMode * accelerometer[i].frameRate * (runTime[i].diffMsec / 1000 + 1)), accelerometer[i].frames);
                         checkerFailed = true;
                     }
 
                     /* Check latency less than 100 msec */
                     if ((accelerometer[i].totalLatency / accelerometer[i].frames) > MAX_FRAME_LATENCY_MSEC)
                     {
-                        LOGE("Error: accelerometer[%d] frame motion->host latency is too high (%d)", i, (accelerometer[i].totalLatency / accelerometer[i].frames));
+                        printf("Error: accelerometer[%d] frame motion->host latency is too high (%lld)\n", i, (accelerometer[i].totalLatency / accelerometer[i].frames));
                         checkerFailed = true;
                     }
 
                     /* Check frame drops */
                     if (accelerometer[i].frameDrops > 0)
                     {
-                        LOGE("Error: accelerometer[%d] frame drops occurred (%d)", i, accelerometer[i].frameDrops);
+                        printf("Error: accelerometer[%d] frame drops occurred (%lld)\n", i, accelerometer[i].frameDrops);
                         checkerFailed = true;
                     }
 
                     /* Check frame reorder */
                     if (accelerometer[i].frameReorder > 0)
                     {
-                        LOGE("Error: accelerometer[%d] frame reorder occurred (%d)", i, accelerometer[i].frameReorder);
+                        printf("Error: accelerometer[%d] frame reorder occurred (%lld)\n", i, accelerometer[i].frameReorder);
                         checkerFailed = true;
                     }
                 }
@@ -859,7 +858,7 @@ public:
             /* Check if pose started */
             if ((pose[i].enabled) && (pose[i].outputMode) && (runTime[i].diffMsec == 0))
             {
-                LOGE("Error: Enabled pose[%d] didn't start", i);
+                printf("Error: Enabled pose[%d] didn't start\n", i);
                 checkerFailed = true;
             }
             else
@@ -867,7 +866,7 @@ public:
                 /* Check if received min frames of runtime - 500 msec */
                 if (pose[i].frames < ((pose[i].enabled * pose[i].outputMode * ((std::min)((uint16_t)100, pose[i].frameRate)) * poseRunTimeMsecMin) / 1000))
                 {
-                    LOGE("Error: Got too few pose[%d] frames [Expected %d] [Actual %d]", i, ((pose[i].enabled * pose[i].outputMode * pose[i].frameRate * poseRunTimeMsec) / 1000), pose[i].frames);
+                    printf("Error: Got too few pose[%d] frames [Expected %d] [Actual %lld]\n", i, ((pose[i].enabled * pose[i].outputMode * pose[i].frameRate * poseRunTimeMsec) / 1000), pose[i].frames);
                     checkerFailed = true;
                 }
 
@@ -876,35 +875,35 @@ public:
                     /* Check if received max frames of runtime + 500 msec */
                     if (pose[i].frames > ((pose[i].enabled * pose[i].outputMode * ((std::max)((uint16_t)100, pose[i].frameRate)) * poseRunTimeMsecMax) / 1000))
                     {
-                        LOGE("Error: Got too many pose[%d] frames [Expected %d] [Actual %d]", i, ((pose[i].enabled * pose[i].outputMode * pose[i].frameRate * poseRunTimeMsec) / 1000), pose[i].frames);
+                        printf("Error: Got too many pose[%d] frames [Expected %d] [Actual %lld]\n", i, ((pose[i].enabled * pose[i].outputMode * pose[i].frameRate * poseRunTimeMsec) / 1000), pose[i].frames);
                         checkerFailed = true;
                     }
 
                     /* Check latency less than 100 msec */
                     if ((pose[i].totalLatency / pose[i].frames) > MAX_FRAME_LATENCY_MSEC)
                     {
-                        LOGE("Error: pose[%d] frame motion->host latency is too high (%d)", i, (pose[i].totalLatency / pose[i].frames));
+                        printf("Error: pose[%d] frame motion->host latency is too high (%lld)\n", i, (pose[i].totalLatency / pose[i].frames));
                         checkerFailed = true;
                     }
 
                     /* Check frame drops */
                     if (pose[i].frameDrops > 0)
                     {
-                        LOGE("Error: pose[%d] frame drops occurred (%d)", i, pose[i].frameDrops);
+                        printf("Error: pose[%d] frame drops occurred (%lld)\n", i, pose[i].frameDrops);
                         checkerFailed = true;
                     }
 
                     /* Check frame reorder */
                     if (pose[i].frameReorder > 0)
                     {
-                        LOGE("Error: pose[%d] frame reorder occurred (%d)", i, pose[i].frameReorder);
+                        printf("Error: pose[%d] frame reorder occurred (%lld)\n", i, pose[i].frameReorder);
                         checkerFailed = true;
                     }
 
                     /* Check NAN frame */
                     if (pose[i].nanFrame > 0)
                     {
-                        LOGE("Error: pose[%d] NAN frame received (%d)", i, pose[i].nanFrame);
+                        printf("Error: pose[%d] NAN frame received (%lld)\n", i, pose[i].nanFrame);
                         checkerFailed = true;
                     }
                 }
@@ -914,7 +913,7 @@ public:
         /* Check if got error events */
         if (error.count > 0)
         {
-            LOGE("Error: Got %d error events", error.count);
+            printf("Error: Got %d error events\n", error.count);
             checkerFailed = true;
         }
 
@@ -997,7 +996,7 @@ public:
         error.count++;
         if (gConfiguration.errorExit == true)
         {
-            LOGE("Error event occurred");
+            printf("Error event occurred\n");
             exit(EXIT_FAILURE);
         }
     }
@@ -1028,7 +1027,7 @@ public:
                 gyro[gyroFrame.sensorIndex].frameDrops++;
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Gyro[%d] frame drops occurred - %lld missing frames [FrameId %d-%d], time diff = %d (msec)", gyroFrame.sensorIndex, offset-1, gyro[gyroFrame.sensorIndex].prevFrameId+1, gyroFrame.frameId-1, ns2ms(gyroFrame.timestamp - gyro[gyroFrame.sensorIndex].prevFrameTimeStamp));
+                    printf("Gyro[%d] frame drops occurred - %lld missing frames [FrameId %d-%d], time diff = %d (msec)\n", gyroFrame.sensorIndex, offset-1, gyro[gyroFrame.sensorIndex].prevFrameId+1, gyroFrame.frameId-1, ns2ms(gyroFrame.timestamp - gyro[gyroFrame.sensorIndex].prevFrameTimeStamp));
                     exit(EXIT_FAILURE);
                 }
             }
@@ -1037,7 +1036,7 @@ public:
                 gyro[gyroFrame.sensorIndex].frameReorder++;
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Gyro[%d] frame reorder occurred - prev frameId = %d, new frameId = %d, time diff = %d (msec)", gyroFrame.sensorIndex, gyro[gyroFrame.sensorIndex].prevFrameId, gyroFrame.frameId, ns2ms(gyroFrame.timestamp - gyro[gyroFrame.sensorIndex].prevFrameTimeStamp));
+                    printf("Gyro[%d] frame reorder occurred - prev frameId = %d, new frameId = %d, time diff = %d (msec)\n", gyroFrame.sensorIndex, gyro[gyroFrame.sensorIndex].prevFrameId, gyroFrame.frameId, ns2ms(gyroFrame.timestamp - gyro[gyroFrame.sensorIndex].prevFrameTimeStamp));
                     exit(EXIT_FAILURE);
                 }
             }
@@ -1061,7 +1060,7 @@ public:
                 velocimeter[velocimeterFrame.sensorIndex].frameDrops++;
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Velocimeter[%d] frame drops occurred - %lld missing frames [FrameId %d-%d], time diff = %d (msec)", velocimeterFrame.sensorIndex, offset-1, velocimeter[velocimeterFrame.sensorIndex].prevFrameId+1, velocimeterFrame.frameId-1, ns2ms(velocimeterFrame.timestamp - velocimeter[velocimeterFrame.sensorIndex].prevFrameTimeStamp));
+                    printf("Velocimeter[%d] frame drops occurred - %lld missing frames [FrameId %d-%d], time diff = %d (msec)\n", velocimeterFrame.sensorIndex, offset-1, velocimeter[velocimeterFrame.sensorIndex].prevFrameId+1, velocimeterFrame.frameId-1, ns2ms(velocimeterFrame.timestamp - velocimeter[velocimeterFrame.sensorIndex].prevFrameTimeStamp));
                     exit(EXIT_FAILURE);
                 }
             }
@@ -1070,7 +1069,7 @@ public:
                 velocimeter[velocimeterFrame.sensorIndex].frameReorder++;
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Velocimeter[%d] frame reorder occurred - prev frameId = %d, new frameId = %d, time diff = %d (msec)", velocimeterFrame.sensorIndex, velocimeter[velocimeterFrame.sensorIndex].prevFrameId, velocimeterFrame.frameId, ns2ms(velocimeterFrame.timestamp - velocimeter[velocimeterFrame.sensorIndex].prevFrameTimeStamp));
+                    printf("Velocimeter[%d] frame reorder occurred - prev frameId = %d, new frameId = %d, time diff = %d (msec)\n", velocimeterFrame.sensorIndex, velocimeter[velocimeterFrame.sensorIndex].prevFrameId, velocimeterFrame.frameId, ns2ms(velocimeterFrame.timestamp - velocimeter[velocimeterFrame.sensorIndex].prevFrameTimeStamp));
                     exit(EXIT_FAILURE);
                 }
             }
@@ -1094,7 +1093,7 @@ public:
                 accelerometer[accelerometerFrame.sensorIndex].frameDrops++;
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Accelerometer[%d] frame drops occurred - %lld missing frames [FrameId %d-%d], time diff = %d (msec)", accelerometerFrame.sensorIndex, offset-1, accelerometer[accelerometerFrame.sensorIndex].prevFrameId+1, accelerometerFrame.frameId-1, ns2ms(accelerometerFrame.timestamp - accelerometer[accelerometerFrame.sensorIndex].prevFrameTimeStamp));
+                    printf("Accelerometer[%d] frame drops occurred - %lld missing frames [FrameId %d-%d], time diff = %d (msec)\n", accelerometerFrame.sensorIndex, offset-1, accelerometer[accelerometerFrame.sensorIndex].prevFrameId+1, accelerometerFrame.frameId-1, ns2ms(accelerometerFrame.timestamp - accelerometer[accelerometerFrame.sensorIndex].prevFrameTimeStamp));
                     exit(EXIT_FAILURE);
                 }
 
@@ -1104,7 +1103,7 @@ public:
                 accelerometer[accelerometerFrame.sensorIndex].frameReorder++;
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Accelerometer[%d] frame reorder occurred - prev frameId = %d, new frameId = %d, time diff = %d (msec)", accelerometerFrame.sensorIndex, accelerometer[accelerometerFrame.sensorIndex].prevFrameId, accelerometerFrame.frameId, ns2ms(accelerometerFrame.timestamp - accelerometer[accelerometerFrame.sensorIndex].prevFrameTimeStamp));
+                    printf("Accelerometer[%d] frame reorder occurred - prev frameId = %d, new frameId = %d, time diff = %d (msec)\n", accelerometerFrame.sensorIndex, accelerometer[accelerometerFrame.sensorIndex].prevFrameId, accelerometerFrame.frameId, ns2ms(accelerometerFrame.timestamp - accelerometer[accelerometerFrame.sensorIndex].prevFrameTimeStamp));
                     exit(EXIT_FAILURE);
                 }
             }
@@ -1125,7 +1124,7 @@ public:
             pose[poseFrame.sourceIndex].nanFrame++;
             if (gConfiguration.errorExit == true)
             {
-                LOGE("Got NAN Pose[%u] (%" PRId64 "): Timestamp %" PRId64 ", Translation[%f, %f, %f], TrackerConfidence = 0x%X", poseFrame.sourceIndex, pose[poseFrame.sourceIndex].frames, poseFrame.timestamp, poseFrame.translation.x, poseFrame.translation.y, poseFrame.translation.z, poseFrame.trackerConfidence);
+                printf("Got NAN Pose[%u] (%lld): Timestamp %lld, Translation[%f, %f, %f], TrackerConfidence = 0x%X\n", poseFrame.sourceIndex, pose[poseFrame.sourceIndex].frames, poseFrame.timestamp, poseFrame.translation.x, poseFrame.translation.y, poseFrame.translation.z, poseFrame.trackerConfidence);
                 exit(EXIT_FAILURE);
             }
         }
@@ -1139,7 +1138,7 @@ public:
                 pose[poseFrame.sourceIndex].frameDrops++;
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Pose[%d] frame drops occurred - %lld missing frames, prev pose time = %lld, new pose time = %lld, time diff = %d (msec)", poseFrame.sourceIndex, offset-1, pose[poseFrame.sourceIndex].prevFrameTimeStamp, poseFrame.timestamp, ns2ms(poseFrame.timestamp - pose[poseFrame.sourceIndex].prevFrameTimeStamp));
+                    printf("Pose[%d] frame drops occurred - %lld missing frames, prev pose time = %lld, new pose time = %lld, time diff = %d (msec)\n", poseFrame.sourceIndex, offset-1, pose[poseFrame.sourceIndex].prevFrameTimeStamp, poseFrame.timestamp, ns2ms(poseFrame.timestamp - pose[poseFrame.sourceIndex].prevFrameTimeStamp));
                     exit(EXIT_FAILURE);
                 }
             }
@@ -1148,7 +1147,7 @@ public:
                 pose[poseFrame.sourceIndex].frameReorder++;
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Pose[%d] frame reorder occurred - prev pose time = %lld, new pose time = %lld, time diff = %d (msec)", poseFrame.sourceIndex, pose[poseFrame.sourceIndex].prevFrameTimeStamp, poseFrame.timestamp, ns2ms(poseFrame.timestamp - pose[poseFrame.sourceIndex].prevFrameTimeStamp));
+                    printf("Pose[%d] frame reorder occurred - prev pose time = %lld, new pose time = %lld, time diff = %d (msec)\n", poseFrame.sourceIndex, pose[poseFrame.sourceIndex].prevFrameTimeStamp, poseFrame.timestamp, ns2ms(poseFrame.timestamp - pose[poseFrame.sourceIndex].prevFrameTimeStamp));
                     exit(EXIT_FAILURE);
                 }
             }
@@ -1172,7 +1171,7 @@ public:
                 video[videoFrame.sensorIndex].frameDrops++;
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Video[%d] frame drops occurred - %lld missing frames [FrameId %d-%d], time diff = %d (msec)", videoFrame.sensorIndex, offset-1, video[videoFrame.sensorIndex].prevFrameId+1, videoFrame.frameId-1, ns2ms(videoFrame.timestamp - video[videoFrame.sensorIndex].prevFrameTimeStamp));
+                    printf("Video[%d] frame drops occurred - %lld missing frames [FrameId %d-%d], time diff = %d (msec)\n", videoFrame.sensorIndex, offset-1, video[videoFrame.sensorIndex].prevFrameId+1, videoFrame.frameId-1, ns2ms(videoFrame.timestamp - video[videoFrame.sensorIndex].prevFrameTimeStamp));
                     exit(EXIT_FAILURE);
                 }
             }
@@ -1181,7 +1180,7 @@ public:
                 video[videoFrame.sensorIndex].frameReorder++;
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Video[%d] frame reorder occurred - prev frameId = %d, new frameId = %d, time diff = %d (msec)", videoFrame.sensorIndex, video[videoFrame.sensorIndex].prevFrameId, videoFrame.frameId, ns2ms(videoFrame.timestamp - video[videoFrame.sensorIndex].prevFrameTimeStamp));
+                    printf("Video[%d] frame reorder occurred - prev frameId = %d, new frameId = %d, time diff = %d (msec)\n", videoFrame.sensorIndex, video[videoFrame.sensorIndex].prevFrameId, videoFrame.frameId, ns2ms(videoFrame.timestamp - video[videoFrame.sensorIndex].prevFrameTimeStamp));
                     exit(EXIT_FAILURE);
                 }
             }
@@ -1332,14 +1331,14 @@ void updateControllerFW(TrackingData::ControllerDiscoveryEventFrame& message, Pr
     std::ifstream file(gConfiguration.controllerFWFile, std::ios::binary);
     if (!file)
     {
-        LOGE("Error: controller fw file %s doesn't exists", gConfiguration.controllerFWFile.c_str());
+        printf("Error: controller fw file %s doesn't exists\n", gConfiguration.controllerFWFile.c_str());
         return;
     }
 
     uint32_t headerSize = 0;
     if (!file.read((char*)&headerSize, sizeof(headerSize)))
     {
-        LOGE("Error: Failed to read controller file %s", gConfiguration.controllerFWFile.c_str());
+        printf("Error: Failed to read controller file %s\n", gConfiguration.controllerFWFile.c_str());
         return;
     }
 
@@ -1347,14 +1346,14 @@ void updateControllerFW(TrackingData::ControllerDiscoveryEventFrame& message, Pr
 
     if (headerSize == 0)
     {
-        LOGE("Error: Invalid controller fw file header size");
+        printf("Error: Invalid controller fw file header size\n");
         return;
     }
     std::vector<uint8_t> headerArr(headerSize, 0);
     FwFileHeader* header = (FwFileHeader*)headerArr.data();
     if (!file.read((char*)header, headerSize))
     {
-        LOGE("Error: Failed to read header in controller file %s", gConfiguration.controllerFWFile.c_str());
+        printf("Error: Failed to read header in controller file %s\n", gConfiguration.controllerFWFile.c_str());
         return;
     }
 
@@ -1369,13 +1368,13 @@ void updateControllerFW(TrackingData::ControllerDiscoveryEventFrame& message, Pr
     }
     else
     {
-        LOGE("Invalid image type input for burning controller fw: %s", gConfiguration.controllerFWFileType);
+        printf("Invalid image type input for burning controller fw: %s\n", gConfiguration.controllerFWFileType.c_str());
         return;
     }
 
     if ((header->versionSize != 3) && (header->versionSize != 7))
     {
-        LOGE("Unsupported BLE image version size (%d)", header->versionSize);
+        printf("Unsupported BLE image version size (%d)\n", header->versionSize);
         return;
     }
 
@@ -1385,7 +1384,7 @@ void updateControllerFW(TrackingData::ControllerDiscoveryEventFrame& message, Pr
         header->version[2] != discoverdVersion.patch ||
         gConfiguration.controllers[controllerId].burn.configure == ControllerBurnForce)
     {
-        LOGD("Updating controller FW %s application with new version %u.%u.%u", (gConfiguration.controllerFWFileType == "app")?"Application":"Boot Loader", header->version[0], header->version[1], header->version[2]);
+        printf("Updating controller FW %s application with new version %u.%u.%u\n", (gConfiguration.controllerFWFileType == "app")?"Application":"Boot Loader", header->version[0], header->version[1], header->version[2]);
  
         std::vector<uint8_t> imageArr(header->dataSize, 0);
         file.read((char*)imageArr.data(), header->dataSize);
@@ -1394,7 +1393,7 @@ void updateControllerFW(TrackingData::ControllerDiscoveryEventFrame& message, Pr
         auto status = gDevice->ControllerFWUpdate(fw);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed to update controller %s firmware: %s (0x%X)", gConfiguration.controllerFWFileType.c_str(), statusToString(status).c_str(), status);
+            printf("Failed to update controller %s firmware: %s (0x%X)\n", gConfiguration.controllerFWFileType.c_str(), statusToString(status).c_str(), status);
             return;
         }
 
@@ -1403,7 +1402,7 @@ void updateControllerFW(TrackingData::ControllerDiscoveryEventFrame& message, Pr
         return;
     }
 
-    LOGD("Controller %d versions are equal [%u.%u.%u], skipping controller FW update", controllerId, header->version[0], header->version[1], header->version[2]);
+    printf("Controller %d versions are equal [%u.%u.%u], skipping controller FW update\n", controllerId, header->version[0], header->version[1], header->version[2]);
 
     /* Versions are equal, no need to burn this controller */
     gConfiguration.controllers[controllerId].burn.state = ControllerBurnStateDone;
@@ -1421,11 +1420,11 @@ public:
         {
             case TrackingManager::ATTACH:
                 gDevice = device;
-                LOGD("Device (0x%p) Attached - Serial Number %llx", device, (deviceInfo.serialNumber >> 16));
+                printf("Device (0x%p) Attached - Serial Number %llx\n", device, (deviceInfo.serialNumber >> 16));
                 break;
 
             case TrackingManager::DETACH:
-                LOGD("Device (0x%p) Detached - Serial Number %llx", device, (deviceInfo.serialNumber >> 16));
+                printf("Device (0x%p) Detached - Serial Number %llx\n", device, (deviceInfo.serialNumber >> 16));
                 gDevice = NULL;
                 break;
         }
@@ -1434,15 +1433,15 @@ public:
     virtual void onError(Status error, TrackingDevice* dev) override
     {
         gStatistics.inc();
-        LOGE("Error occurred while connecting device: %p Error: %s (0x%X)", dev, statusToString(error).c_str(), error);
+        printf("Error occurred while connecting device: %p Error: %s (0x%X)\n", dev, statusToString(error).c_str(), error);
     }
 
     virtual void onPoseFrame(TrackingData::PoseFrame& pose)
     {
         gStatistics.inc(pose);
 
-        LOGV("Got Pose[%u] (%" PRId64 "): Timestamp %" PRId64 ", Translation[%f, %f, %f], TrackerConfidence = 0x%X",
-            pose.sourceIndex, gStatistics.pose[pose.sourceIndex].frames, pose.timestamp, pose.translation.x, pose.translation.y, pose.translation.z, pose.trackerConfidence);
+        /*printf("Got Pose[%u] (%lld): Timestamp %lld, Translation[%f, %f, %f], TrackerConfidence = 0x%X\n",
+            pose.sourceIndex, gStatistics.pose[pose.sourceIndex].frames, pose.timestamp, pose.translation.x, pose.translation.y, pose.translation.z, pose.trackerConfidence);*/
 
         if (gConfiguration.statistics == true)
         {
@@ -1481,12 +1480,12 @@ public:
         static UtilTimeStamps timeStamp(frame);
         timeStamp.setTime(frame);
 
-        LOGV("Got Video[%u] frame (%" PRId64 "): Timestamp %" PRId64 ", FrameId = %u, Exposure = %u, Gain = %f, FrameLength = %u, size %dx%d pixels", frame.sensorIndex, gStatistics.video[frame.sensorIndex].frames, frame.timestamp,
-            frame.frameId, frame.exposuretime, frame.gain,  frame.frameLength, frame.profile.width, frame.profile.height);
+        /*printf("Got Video[%u] frame (%lld): Timestamp %lld, FrameId = %u, Exposure = %u, Gain = %f, FrameLength = %u, size %dx%d pixels\n", frame.sensorIndex, gStatistics.video[frame.sensorIndex].frames, frame.timestamp,
+            frame.frameId, frame.exposuretime, frame.gain,  frame.frameLength, frame.profile.width, frame.profile.height);*/
 
         if (((frame.frameLength < (uint32_t)(frame.profile.height * frame.profile.stride))) || (((frame.frameLength < (uint32_t)(frame.profile.height * frame.profile.width)))))
         {
-            LOGE("Error: Video[%u] frame (%" PRId64 ") size mismatch:  FrameId = %u, FrameLength = %u, Width = %u, Height = %u, Stride = %u", 
+            printf("Error: Video[%u] frame (%lld) size mismatch:  FrameId = %u, FrameLength = %u, Width = %u, Height = %u, Stride = %u\n", 
                 frame.sensorIndex, gStatistics.video[frame.sensorIndex].frames, frame.frameId, frame.frameLength, frame.profile.width, frame.profile.height, frame.profile.stride);
         }
 
@@ -1519,9 +1518,9 @@ public:
         auto calibratedAccelerationZ = ((message.acceleration.z * calibrationInfo.accelerometerScale[2][2]) - calibrationInfo.accelerometerBiasZ);
         auto magnitude = sqrt((calibratedAccelerationX * calibratedAccelerationX) + (calibratedAccelerationY * calibratedAccelerationY) + (calibratedAccelerationZ * calibratedAccelerationZ));
 
-        LOGV("Got Accelerometer[%u] frame (%" PRId64 "): Timestamp %" PRId64 ", FrameID = %d, Temperature = %.0f, Acceleration[%f, %f, %f], Calibrated Acceleration[%f, %f, %f], Magnitude = %f",
-            message.sensorIndex, gStatistics.accelerometer[message.sensorIndex].frames, message.timestamp, message.frameId, message.temperature, message.acceleration.x, message.acceleration.y, message.acceleration.z,
-            calibratedAccelerationX, calibratedAccelerationY, calibratedAccelerationZ, magnitude);
+        //printf("Got Accelerometer[%u] frame (%lld): Timestamp %lld, FrameID = %d, Temperature = %.0f, Acceleration[%f, %f, %f], Calibrated Acceleration[%f, %f, %f], Magnitude = %f\n",
+        //    message.sensorIndex, gStatistics.accelerometer[message.sensorIndex].frames, message.timestamp, message.frameId, message.temperature, message.acceleration.x, message.acceleration.y, message.acceleration.z,
+        //    calibratedAccelerationX, calibratedAccelerationY, calibratedAccelerationZ, magnitude);
 
         if (gConfiguration.statistics == true)
         {
@@ -1539,8 +1538,8 @@ public:
     {
         gStatistics.inc(message);
 
-        LOGV("Got Gyro[%u] frame (%" PRId64 "): Timestamp %" PRId64 ", FrameID = %d, Temperature = %.0f, AngularVelocity[%f, %f, %f]", message.sensorIndex, gStatistics.gyro[message.sensorIndex].frames,
-            message.timestamp, message.frameId, message.temperature, message.angularVelocity.x, message.angularVelocity.y, message.angularVelocity.z);
+        //printf("Got Gyro[%u] frame (%lld): Timestamp %lld, FrameID = %d, Temperature = %.0f, AngularVelocity[%f, %f, %f]\n", message.sensorIndex, gStatistics.gyro[message.sensorIndex].frames,
+        //    message.timestamp, message.frameId, message.temperature, message.angularVelocity.x, message.angularVelocity.y, message.angularVelocity.z);
 
         if (gConfiguration.statistics == true)
         {
@@ -1557,8 +1556,8 @@ public:
     {
         gStatistics.inc(message);
 
-        LOGV("Got Velocimeter[%u] frame (%" PRId64 "): Timestamp %" PRId64 ", FrameID = %d, Temperature = %.0f, AngularVelocity[%f, %f, %f]", message.sensorIndex, gStatistics.velocimeter[message.sensorIndex].frames,
-            message.timestamp, message.frameId, message.temperature, message.angularVelocity.x, message.angularVelocity.y, message.angularVelocity.z);
+        //printf("Got Velocimeter[%u] frame (%lld): Timestamp %lld, FrameID = %d, Temperature = %.0f, AngularVelocity[%f, %f, %f]\n", message.sensorIndex, gStatistics.velocimeter[message.sensorIndex].frames,
+        //    message.timestamp, message.frameId, message.temperature, message.angularVelocity.x, message.angularVelocity.y, message.angularVelocity.z);
 
         if (gConfiguration.statistics == true)
         {
@@ -1573,7 +1572,7 @@ public:
 
     virtual void onControllerDiscoveryEventFrame(TrackingData::ControllerDiscoveryEventFrame& message)
     {
-        //LOGD("Got Controller Discovery Event: on MacAddress [%02X:%02X:%02X:%02X:%02X:%02X], AddressType [0x%X], Manufacturer ID [0x%X], Vendor Data [0x%X], App Version [%u.%u.%u], Boot Loader Version [%u.%u.%u], Soft Device Version [%u], Protocol Version [%u]",
+        //printf("Got Controller Discovery Event: on MacAddress [%02X:%02X:%02X:%02X:%02X:%02X], AddressType [0x%X], Manufacturer ID [0x%X], Vendor Data [0x%X], App Version [%u.%u.%u], Boot Loader Version [%u.%u.%u], Soft Device Version [%u], Protocol Version [%u]",
         //    message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5],
         //    message.addressType,
         //    message.manufacturerId,
@@ -1598,7 +1597,7 @@ public:
                     {
                         case ControllerBurnStateNotStarted:
                             /* Burn not started yet, initiating burn process */
-                            LOGD("Start updating FW of controller %d MacAddress %02X:%02X:%02X:%02X:%02X:%02X", controllerId, message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5]);
+                            printf("Start updating FW of controller %d MacAddress %02X:%02X:%02X:%02X:%02X:%02X\n", controllerId, message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5]);
                             updateControllerFW(message, controllerId);
 
                             /* If update controller FW succeeded, skipping connection attempt until next discovery event */
@@ -1608,13 +1607,13 @@ public:
 
                         case ControllerBurnStateProcessing:
                             /* Burn is already in progress, exiting */
-                            LOGD("FW Update is already in progress on controller %d MacAddress %02X:%02X:%02X:%02X:%02X:%02X", controllerId, message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5]);
+                            printf("FW Update is already in progress on controller %d MacAddress %02X:%02X:%02X:%02X:%02X:%02X\n", controllerId, message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5]);
                             return;
                             break;
 
                         case ControllerBurnStateDone:
                             /* Burn is done, continue to controller connect */
-                            LOGD("Controller FW is updated on controller %d MacAddress %02X:%02X:%02X:%02X:%02X:%02X", controllerId, message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5]);
+                            printf("Controller FW is updated on controller %d MacAddress %02X:%02X:%02X:%02X:%02X:%02X\n", controllerId, message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5]);
                             break;
                     }
                 }
@@ -1623,13 +1622,13 @@ public:
                 uint8_t controllerId = ProfileTypeMax;
 
                 /* Found our controller, trying to connect */
-                LOGD("Connecting to Controller with MacAddress = %02X:%02X:%02X:%02X:%02X:%02X, AddressType [0x%X]", message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5], message.addressType);
+                printf("Connecting to Controller with MacAddress = %02X:%02X:%02X:%02X:%02X:%02X, AddressType [0x%X]\n", message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5], message.addressType);
 
                 TrackingData::ControllerDeviceConnect device(message.macAddress, CONTROLLER_CONNECT_TIMEOUT_MSEC, message.addressType);
                 status = gDevice->ControllerConnect(device, controllerId);
                 if (status != Status::SUCCESS)
                 {
-                    LOGE("Error: Failed connecting controller MacAddress = %02X:%02X:%02X:%02X:%02X:%02X , Status %s (0x%X)",
+                    printf("Error: Failed connecting controller MacAddress = %02X:%02X:%02X:%02X:%02X:%02X , Status %s (0x%X)\n",
                         message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5], statusToString(status).c_str(), status);
                 }
                 else
@@ -1640,7 +1639,7 @@ public:
         }
         else
         {
-            LOGE("Error: Got Controller DiscoveryEvent on MacAddress = %02X:%02X:%02X:%02X:%02X:%02X while controllers are disabled",
+            printf("Error: Got Controller DiscoveryEvent on MacAddress = %02X:%02X:%02X:%02X:%02X:%02X while controllers are disabled\n",
                 message.macAddress[0], message.macAddress[1], message.macAddress[2], message.macAddress[3], message.macAddress[4], message.macAddress[5]);
         }
     };
@@ -1649,12 +1648,12 @@ public:
     {
         if ((message.controllerId >= ProfileTypeMax) || (message.controllerId < Controller1))
         {
-            LOGE("Error: Got Bad Controller Connected Event: Status = %s (0x%X), ControllerID = %d, ManufactorId = 0x%X, Protocol = %u, App = %u.%u.%u, SoftDevice = %u, BootLoader = %u.%u.%u",
+            printf("Error: Got Bad Controller Connected Event: Status = %s (0x%X), ControllerID = %d, ManufactorId = 0x%X, Protocol = %u, App = %u.%u.%u, SoftDevice = %u, BootLoader = %u.%u.%u\n",
                 statusToString(message.status).c_str(), message.status, message.controllerId, message.manufacturerId, message.protocol.major, message.app.major, message.app.minor, message.app.build, message.softDevice.major, message.bootLoader.major, message.bootLoader.minor, message.bootLoader.build);
             return;
         }
 
-        LOGD("Got Controller[%d] Connected Event with status = %s (0x%X)", message.controllerId, statusToString(message.status).c_str(), message.status);
+        printf("Got Controller[%d] Connected Event with status = %s (0x%X)\n", message.controllerId, statusToString(message.status).c_str(), message.status);
 
         if (message.status == Status::SUCCESS)
         {
@@ -1662,11 +1661,11 @@ public:
 
             if (gConfiguration.controllers[message.controllerId].calibrate == true)
             {
-                LOGD("Start calibrating controller %d", message.controllerId);
+                printf("Start calibrating controller %d\n", message.controllerId);
                 Status status = gDevice->ControllerStartCalibration(message.controllerId);
                 if (status != Status::SUCCESS)
                 {
-                    LOGE("Error: Failed calibrating controller %d, Status %s (0x%X)", message.controllerId, statusToString(status).c_str(), status);
+                    printf("Error: Failed calibrating controller %d, Status %s (0x%X)\n", message.controllerId, statusToString(status).c_str(), status);
                     gStatistics.runTime[message.controllerId].start();
                 }
             }
@@ -1677,7 +1676,7 @@ public:
         }
         else
         {
-            LOGE("Error: Failed connecting to Controller[%d] - status = %s (0x%X)", message.controllerId, statusToString(message.status).c_str(), message.status);
+            printf("Error: Failed connecting to Controller[%d] - status = %s (0x%X)\n", message.controllerId, statusToString(message.status).c_str(), message.status);
         }
     };
 
@@ -1685,11 +1684,11 @@ public:
     {
         if ((message.controllerId >= ProfileTypeMax) || (message.controllerId < Controller1))
         {
-            LOGE("Error: Got Bad Controller Disconnected Event on ControllerID = %d", message.controllerId);
+            printf("Error: Got Bad Controller Disconnected Event on ControllerID = %d\n", message.controllerId);
             return;
         }
 
-        LOGD("Got Controller Disconnected Event on ControllerID = %d", message.controllerId);
+        printf("Got Controller Disconnected Event on ControllerID = %d\n", message.controllerId);
         gStatistics.controller[message.controllerId].isConnected = false;
         gStatistics.controller[message.controllerId].isCalibrated = false;
         gStatistics.runTime[message.controllerId].stop();
@@ -1700,17 +1699,17 @@ public:
     {
         if ((message.controllerId >= ProfileTypeMax) || (message.controllerId < Controller1))
         {
-            LOGE("Error: Got Bad Controller Calibration Event on ControllerID = %d", message.controllerId);
+            printf("Error: Got Bad Controller Calibration Event on ControllerID = %d\n", message.controllerId);
             return;
         }
 
         if (message.status != Status::SUCCESS)
         {
-            LOGE("Error: Got Controller Calibration Event on ControllerID = %d, Status %s (0x%X)", message.controllerId, statusToString(message.status).c_str(), message.status);
+            printf("Error: Got Controller Calibration Event on ControllerID = %d, Status %s (0x%X)\n", message.controllerId, statusToString(message.status).c_str(), message.status);
             return;
         }
 
-        LOGD("Got Controller[%d] Calibration Event with status %s (0x%X)", message.controllerId, statusToString(message.status).c_str(), message.status);
+        printf("Got Controller[%d] Calibration Event with status %s (0x%X)\n", message.controllerId, statusToString(message.status).c_str(), message.status);
 
         gStatistics.controller[message.controllerId].isCalibrated = true;
         gStatistics.runTime[message.controllerId].start();
@@ -1722,12 +1721,12 @@ public:
 
         if (gStatistics.controller[message.sensorIndex].isConnected == true)
         {
-            LOGD("Got Controller[%u] frame: Timestamp %" PRId64 ", EventId = 0x%X, InstanceId = 0x%X, SensorData = %02X:%02X:%02X:%02X:%02X:%02X", message.sensorIndex, message.timestamp,
+            printf("Got Controller[%u] frame: Timestamp %lld, EventId = 0x%X, InstanceId = 0x%X, SensorData = %02X:%02X:%02X:%02X:%02X:%02X\n", message.sensorIndex, message.timestamp,
                 message.eventId, message.instanceId, message.sensorData[0], message.sensorData[1], message.sensorData[2], message.sensorData[3], message.sensorData[4], message.sensorData[5]);
         }
         else
         {
-            LOGE("Error: Got Controller[%u] frame on disconnected controller: Timestamp %" PRId64 ", EventId = 0x%X, InstanceId = 0x%X, SensorData = %02X:%02X:%02X:%02X:%02X:%02X", message.sensorIndex, message.timestamp,
+            printf("Error: Got Controller[%u] frame on disconnected controller: Timestamp %lld, EventId = 0x%X, InstanceId = 0x%X, SensorData = %02X:%02X:%02X:%02X:%02X:%02X\n", message.sensorIndex, message.timestamp,
                 message.eventId, message.instanceId, message.sensorData[0], message.sensorData[1], message.sensorData[2], message.sensorData[3], message.sensorData[4], message.sensorData[5]);
         }
 
@@ -1748,7 +1747,7 @@ public:
     {
         gStatistics.inc(message);
 
-        LOGV("Got Rssi[%u] frame (%" PRId64 "): Timestamp %" PRId64 ", FrameID = %d, SignalStrength = %.0f", message.sensorIndex, gStatistics.rssi[message.sensorIndex].frames, message.timestamp, message.frameId, message.signalStrength);
+        printf("Got Rssi[%u] frame (%lld): Timestamp %lld, FrameID = %d, SignalStrength = %.0f\n", message.sensorIndex, gStatistics.rssi[message.sensorIndex].frames, message.timestamp, message.frameId, message.signalStrength);
 
         if (gConfiguration.statistics == true)
         {
@@ -1768,7 +1767,7 @@ public:
         /* On Get localization map, saving to output file */
         if (message.length > 0)
         {
-            LOGD("Got Localization Data frame: status = %s (0x%X), moredata = %s, chunkIndex = %d, length = %d", statusToString(message.status).c_str(), message.status, (message.moreData) ? "True" : "False", message.chunkIndex, message.length);
+            printf("Got Localization Data frame: status = %s (0x%X), moredata = %s, chunkIndex = %d, length = %d\n", statusToString(message.status).c_str(), message.status, (message.moreData) ? "True" : "False", message.chunkIndex, message.length);
 
             std::fstream & mapFile = gConfiguration.localization[LocalizationTypeGet].file;
             string filename = gConfiguration.localization[LocalizationTypeGet].filename;
@@ -1778,12 +1777,12 @@ public:
             }
             else
             {
-                LOGE("Error: Can't write localization data to file %s", filename.c_str());
+                printf("Error: Can't write localization data to file %s\n", filename.c_str());
             }
         }
         else
         {
-            LOGD("Got Set Localization Data frame complete: status = %s (0x%X)", statusToString(message.status).c_str(), message.status);
+            printf("Got Set Localization Data frame complete: status = %s (0x%X)\n", statusToString(message.status).c_str(), message.status);
         }
     };
 
@@ -1793,7 +1792,7 @@ public:
         if (controllerId != ProfileTypeMax)
         {
             gStatistics.controller[controllerId].FWProgress = frame.progress;
-            LOGV("Got controller %d FW update Mac Address [%02X:%02X:%02X:%02X:%02X:%02X], progress %u%%, status 0x%X", controllerId,
+            printf("Got controller %d FW update Mac Address [%02X:%02X:%02X:%02X:%02X:%02X], progress %u%%, status 0x%X\n", controllerId,
                 frame.macAddress[0], frame.macAddress[1], frame.macAddress[2], frame.macAddress[3], frame.macAddress[4], frame.macAddress[5], frame.progress, frame.status);
 
             if (frame.progress == 100)
@@ -1806,13 +1805,13 @@ public:
     virtual void onStatusEvent(OUT TrackingData::StatusEventFrame& frame) override
     {
         gStatistics.inc(frame);
-        LOGD("Got status = %s (0x%X)", statusToString(frame.status).c_str(), frame.status);
+        printf("Got status = %s (0x%X)\n", statusToString(frame.status).c_str(), frame.status);
     }
 
     virtual void onControllerLedEvent(OUT TrackingData::ControllerLedEventFrame& frame) override
     {
         gStatistics.inc(frame);
-        LOGD("Got Controller[%d] Led[%d] intensity %" PRId64 " Event", frame.controllerId, frame.ledId, frame.intensity);
+        printf("Got Controller[%d] Led[%d] intensity %d Event\n", frame.controllerId, frame.ledId, frame.intensity);
     }
 };
 
@@ -1824,7 +1823,7 @@ public:
         Status status = gDevice->SendFrame(frame);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed to send video frame with status (0x%X)", status);
+            printf("Failed to send video frame with status (0x%X)\n", status);
         }
     } 
     virtual void onAccelerometerFrame(TrackingData::AccelerometerFrame& message)
@@ -1832,7 +1831,7 @@ public:
         Status status = gDevice->SendFrame(message);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed to send accelerometer frame with status (0x%X)", status);
+            printf("Failed to send accelerometer frame with status (0x%X)\n", status);
         }
     }
     virtual void onGyroFrame(TrackingData::GyroFrame& message)
@@ -1840,7 +1839,7 @@ public:
         Status status = gDevice->SendFrame(message);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed to send gyro frame with status (0x%X)", status);
+            printf("Failed to send gyro frame with status (0x%X)\n", status);
         }
     }
 };
@@ -1882,7 +1881,7 @@ void imageThreadFunction()
 {
     uint32_t frameCount = 0;
 
-    LOGD("Starting Image thread");
+    printf("Starting Image thread\n");
 
     while (true)
     {
@@ -1919,7 +1918,7 @@ void imageThreadFunction()
                 free((void*)frame->data);
             }
 
-            LOGD("Closing Image thread - saved %d images (PGM)", frameCount);
+            printf("Closing Image thread - saved %d images (PGM)\n", frameCount);
             return;
         }
     } // end of while
@@ -1937,11 +1936,11 @@ void hostLogThreadFunction()
     auto rc = fopen_s(&logThreadStream, fileName.c_str(), "w");
     if (rc != 0)
     {
-        LOGE("Error while opening file %s", fileName.c_str());
+        printf("Error while opening file %s\n", fileName.c_str());
         return;
     }
 
-    LOGD("Starting Host Log thread");
+    printf("Starting Host Log thread\n");
     fprintf(logThreadStream, "Host log: Libtm %u.%u.%u.%u, FW %s\n\n", LIBTM_VERSION_MAJOR, LIBTM_VERSION_MINOR, LIBTM_VERSION_PATCH, LIBTM_VERSION_BUILD, FW_VERSION);
 
     while (true)
@@ -1997,10 +1996,10 @@ void hostLogThreadFunction()
             if (logThreadStream != NULL)
             {
                 fclose(logThreadStream);
-                LOGD("Host logs saved to %s", fileName.c_str());
+                printf("Host logs saved to %s\n", fileName.c_str());
             }
 
-            LOGD("Closing Host Log thread");
+            printf("Closing Host Log thread\n");
             return;
         }
     } // end of while
@@ -2022,12 +2021,12 @@ void fwLogThreadFunction()
         auto rc = fopen_s(&logThreadStream, fileName.c_str(), "w");
         if (rc != 0)
         {
-            LOGE("Error while opening file %s", fileName.c_str());
+            printf("Error while opening file %s\n", fileName.c_str());
             return;
         }
     }
 
-    LOGD("Starting Log thread");
+    printf("Starting Log thread\n");
     if (logThreadStream != stdout)
     {
         fprintf(logThreadStream, "FW log: Libtm %u.%u.%u.%u, FW %s\n\n", LIBTM_VERSION_MAJOR, LIBTM_VERSION_MINOR, LIBTM_VERSION_PATCH, LIBTM_VERSION_BUILD, FW_VERSION);
@@ -2100,10 +2099,10 @@ void fwLogThreadFunction()
             if ((logThreadStream != NULL) && (gConfiguration.logConfiguration[LogSourceFW].logOutputMode == LogOutputModeBuffer))
             {
                 fclose(logThreadStream);
-                LOGD("FW logs saved to %s", fileName.c_str());
+                printf("FW logs saved to %s\n", fileName.c_str());
             }
 
-            LOGD("Closing Log thread");
+            printf("Closing Log thread\n");
             return;
         }
     } // end of while
@@ -3309,7 +3308,7 @@ void saveOutput()
             save_file.write((char*)csvHeader.str().data(), csvHeader.str().size());
             save_file.write((char*)videoCSV.str().data(), videoCSV.str().size());
             save_file.close();
-            LOGD("Video saved to %s", fileName.c_str());
+            printf("Video saved to %s\n", fileName.c_str());
             videoCSV.str("");
         }
 
@@ -3328,7 +3327,7 @@ void saveOutput()
             save_file.write((char*)csvHeader.str().data(), csvHeader.str().size());
             save_file.write((char*)gyroCSV.str().data(), gyroCSV.str().size());
             save_file.close();
-            LOGD("Gyro saved to %s", fileName.c_str());
+            printf("Gyro saved to %s\n", fileName.c_str());
             gyroCSV.str("");
         }
 
@@ -3347,7 +3346,7 @@ void saveOutput()
             save_file.write((char*)csvHeader.str().data(), csvHeader.str().size());
             save_file.write((char*)velocimeterCSV.str().data(), velocimeterCSV.str().size());
             save_file.close();
-            LOGD("Velocimeter saved to %s", fileName.c_str());
+            printf("Velocimeter saved to %s\n", fileName.c_str());
             velocimeterCSV.str("");
         }
 
@@ -3372,7 +3371,7 @@ void saveOutput()
             save_file.write((char*)csvHeader.str().data(), csvHeader.str().size());
             save_file.write((char*)poseCSV.str().data(), poseCSV.str().size());
             save_file.close();
-            LOGD("Pose saved to %s", fileName.c_str());
+            printf("Pose saved to %s\n", fileName.c_str());
             poseCSV.str("");
         }
 
@@ -3385,7 +3384,7 @@ void saveOutput()
             std::ofstream save_file(".\\" + fileName, std::ofstream::binary);
             save_file.write((char*)poseTUM.str().data(), poseTUM.str().size());
             save_file.close();
-            LOGD("Pose TUM saved to %s", fileName.c_str());
+            printf("Pose TUM saved to %s\n", fileName.c_str());
             poseTUM.str("");
         }
 
@@ -3405,7 +3404,7 @@ void saveOutput()
             save_file.write((char*)csvHeader.str().data(), csvHeader.str().size());
             save_file.write((char*)accelerometerCSV.str().data(), accelerometerCSV.str().size());
             save_file.close();
-            LOGD("Accelerometer saved to %s", fileName.c_str());
+            printf("Accelerometer saved to %s\n", fileName.c_str());
             accelerometerCSV.str("");
         }
 
@@ -3424,7 +3423,7 @@ void saveOutput()
             save_file.write((char*)csvHeader.str().data(), csvHeader.str().size());
             save_file.write((char*)controllerCSV.str().data(), controllerCSV.str().size());
             save_file.close();
-            LOGD("Controller saved to %s", fileName.c_str());
+            printf("Controller saved to %s\n", fileName.c_str());
             controllerCSV.str("");
         }
 
@@ -3443,7 +3442,7 @@ void saveOutput()
             save_file.write((char*)csvHeader.str().data(), csvHeader.str().size());
             save_file.write((char*)rssiCSV.str().data(), rssiCSV.str().size());
             save_file.close();
-            LOGD("Rssi saved to %s", fileName.c_str());
+            printf("Rssi saved to %s\n", fileName.c_str());
             rssiCSV.str("");
         }
     }
@@ -3454,14 +3453,14 @@ void printSupportedProfiles(TrackingData::Profile& profile)
 {
     uint32_t totalProfiles = 0;
 
-    LOGD("---+---------------+------------+--------+-------+--------+--------+--------+---------+--------");
-    LOGD(" # |    Profile    |   Sensor   | Frames | Width | Stride | Height | Pixel  | Enabled | Output ");
-    LOGD("   |               | Type | Idx | PerSec |       |        |        | Format |         | Mode   ");
-    LOGD("---+---------------+------+-----+--------+-------+--------+--------+--------+---------+--------");
+    printf("---+---------------+------------+--------+-------+--------+--------+--------+---------+--------\n");
+    printf(" # |    Profile    |   Sensor   | Frames | Width | Stride | Height | Pixel  | Enabled | Output \n");
+    printf("   |               | Type | Idx | PerSec |       |        |        | Format |         | Mode   \n");
+    printf("---+---------------+------+-----+--------+-------+--------+--------+--------+---------+--------\n");
 
     for (uint8_t i = 0; i < VideoProfileMax; i++)
     {
-        LOGD("%02d | FishEye       | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d", totalProfiles,
+        printf("%02d | FishEye       | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d\n", totalProfiles,
             SensorType::Fisheye,
             profile.video[i].sensorIndex,
             profile.video[i].fps, profile.video[i].profile.width, profile.video[i].profile.stride, profile.video[i].profile.height,
@@ -3471,21 +3470,21 @@ void printSupportedProfiles(TrackingData::Profile& profile)
 
     for (uint8_t i = 0; i < GyroProfileMax; i++)
     {
-        LOGD("%02d | Gyro          | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d", totalProfiles, SensorType::Gyro, profile.gyro[i].sensorIndex,
+        printf("%02d | Gyro          | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d\n", totalProfiles, SensorType::Gyro, profile.gyro[i].sensorIndex,
             profile.gyro[i].fps, 0, 0, 0, 0, profile.gyro[i].enabled, profile.gyro[i].outputEnabled);
         totalProfiles++;
     }
 
     for (uint8_t i = 0; i < AccelerometerProfileMax; i++)
     {
-        LOGD("%02d | Accelerometer | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d", totalProfiles, SensorType::Accelerometer, profile.accelerometer[i].sensorIndex,
+        printf("%02d | Accelerometer | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d\n", totalProfiles, SensorType::Accelerometer, profile.accelerometer[i].sensorIndex,
             profile.accelerometer[i].fps, 0, 0, 0, 0, profile.accelerometer[i].enabled, profile.accelerometer[i].outputEnabled);
         totalProfiles++;
     }
 
     for (uint8_t i = 0; i < VelocimeterProfileMax; i++)
     {
-        LOGD("%02d | Velocimeter   | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d", totalProfiles, SensorType::Velocimeter, profile.gyro[i].sensorIndex,
+        printf("%02d | Velocimeter   | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d\n", totalProfiles, SensorType::Velocimeter, profile.gyro[i].sensorIndex,
             0, 0, 0, 0, 0, profile.velocimeter[i].enabled, profile.velocimeter[i].outputEnabled);
         totalProfiles++;
     }
@@ -3506,15 +3505,15 @@ void printSupportedProfiles(TrackingData::Profile& profile)
                 break;
         }
 
-        LOGD("%02d | Pose          | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d", totalProfiles, 0, profile.sixDof[i].profileType,
+        printf("%02d | Pose          | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d\n", totalProfiles, 0, profile.sixDof[i].profileType,
             poseInterruptrate, 0, 0, 0, 0, profile.sixDof[i].enabled, profile.sixDof[i].enabled);
         totalProfiles++;
     }
 
-    LOGD("%02d | Playback      | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d", totalProfiles, 0, 0,
+    printf("%02d | Playback      | 0x%02X |  %01d  | %-6d | %-5d | %-6d | %-5d  |  %-5d | %-7d | %d\n", totalProfiles, 0, 0,
         0, 0, 0, 0, 0, profile.playbackEnabled, profile.playbackEnabled);
 
-    LOGD("---+---------------+------+-----+--------+-------+--------+--------+--------+---------+--------");
+    printf("---+---------------+------+-----+--------+-------+--------+--------+--------+---------+--------\n");
 }
 
 
@@ -3650,7 +3649,7 @@ int main(int argc, char *argv[])
 
     if (gConfiguration.mode == "play")
     {
-        LOGI("Starting play mode");
+        printf("Starting play mode\n");
         mPlayer = std::shared_ptr<TrackingPlayer>(TrackingPlayer::CreateInstance(&listener, gConfiguration.recordFilename.c_str()));
         mPlayer->start();
         while (mPlayer->isStreaming())
@@ -3673,7 +3672,7 @@ int main(int argc, char *argv[])
     gManagerInstance = std::shared_ptr<TrackingManager>(TrackingManager::CreateInstance(&listener, (void*)gConfiguration.inputFilename.c_str()));
     if (gManagerInstance == nullptr)
     {
-        LOGE("Failed to create TrackingManager");
+        printf("Failed to create TrackingManager\n");
         return -1;
     }
 
@@ -3706,16 +3705,16 @@ int main(int argc, char *argv[])
     if (gConfiguration.jtag == true)
     {
         gStatistics.reset();
-        LOGD("Please connect JTAG...");
+        printf("Please connect JTAG...\n");
         while (gDevice != 0)
         {
-            LOGD("Waiting for JTAG connection...");
+            printf("Waiting for JTAG connection...\n");
             std::this_thread::sleep_for(std::chrono::seconds(WAIT_FOR_DEVICE_SEC));
         }
 
         while (gDevice == 0)
         {
-            LOGD("Looking for device (after JTAG)...");
+            printf("Looking for device (after JTAG)...\n");
             std::this_thread::sleep_for(std::chrono::seconds(WAIT_FOR_DEVICE_SEC));
         }
     }
@@ -3724,22 +3723,22 @@ int main(int argc, char *argv[])
     {
         do
         {
-            LOGD("Reset loop %d/%d", resetCount + 1, gConfiguration.resetLoop);
+            printf("Reset loop %d/%d\n", resetCount + 1, gConfiguration.resetLoop);
 
             gStatistics.reset();
             status = gDevice->Reset();
             if (status != Status::SUCCESS)
             {
-                LOGE("Error: Reset device failed, status = %s (0x%X)", statusToString(status).c_str(), status);
+                printf("Error: Reset device failed, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                 goto cleanup;
             }
 
-            LOGD("Sleeping (Reset) for %d seconds...", RESET_DEVICE_TIME_SEC);
+            printf("Sleeping (Reset) for %d seconds...\n", RESET_DEVICE_TIME_SEC);
             std::this_thread::sleep_for(std::chrono::seconds(RESET_DEVICE_TIME_SEC));
 
             while (gDevice == 0)
             {
-                LOGD("Looking for device (after reset) ...");
+                printf("Looking for device (after reset) ...\n");
                 std::this_thread::sleep_for(std::chrono::seconds(WAIT_FOR_DEVICE_SEC));
             }
             resetCount++;
@@ -3753,14 +3752,14 @@ int main(int argc, char *argv[])
         status = gDevice->SetFWLogControl(logControl);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed setting FW log, status = %s (0x%X)", statusToString(status).c_str(), status);
+            printf("Failed setting FW log, status = %s (0x%X)\n", statusToString(status).c_str(), status);
             goto cleanup;
         }
     }
 
     if (gStatistics.error.count > 0)
     {
-        LOGE("Got %d error events, exiting", gStatistics.error.count);
+        printf("Got %d error events, exiting\n", gStatistics.error.count);
         goto cleanup;
     }
 
@@ -3783,7 +3782,7 @@ int main(int argc, char *argv[])
             status = gDevice->SetTemperatureThreshold(setTemperature, TEMPERATURE_THRESHOLD_OVERRIDE_KEY);
             if (status != Status::SUCCESS)
             {
-                LOGE("Failed setting temperature, status = %s (0x%X)", statusToString(status).c_str(), status);
+                printf("Failed setting temperature, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                 goto cleanup;
             }
         }
@@ -3791,7 +3790,7 @@ int main(int argc, char *argv[])
         status = gDevice->GetTemperature(temperature);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed getting temperature, status = %s (0x%X)", statusToString(status).c_str(), status);
+            printf("Failed getting temperature, status = %s (0x%X)\n", statusToString(status).c_str(), status);
             goto cleanup;
         }
     }
@@ -3804,7 +3803,7 @@ int main(int argc, char *argv[])
         status = gDevice->SetGeoLocation(geoLocation);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed to set Geo localization, status = %s (0x%X)", statusToString(status).c_str(), status);
+            printf("Failed to set Geo localization, status = %s (0x%X)\n", statusToString(status).c_str(), status);
             goto cleanup;
         }
     }
@@ -3825,7 +3824,7 @@ int main(int argc, char *argv[])
 
             if ((length > MAX_LOCALIZATION_MAP_SIZE) || (length <= 0))
             {
-                LOGE("Error: Bad localization file size (%u bytes) (supported 0-%u bytes)", length, MAX_LOCALIZATION_MAP_SIZE);
+                printf("Error: Bad localization file size (%u bytes) (supported 0-%u bytes)\n", length, MAX_LOCALIZATION_MAP_SIZE);
                 goto cleanup;
             }
 
@@ -3833,17 +3832,17 @@ int main(int argc, char *argv[])
             uint8_t* buffer = new uint8_t[length];
             if (buffer == NULL)
             {
-                LOGE("Error allocating map buffer of size %d", length);
+                printf("Error allocating map buffer of size %d\n", length);
                 goto cleanup;
             }
 
-            LOGD("Loading map file %s (%d bytes)", filename.c_str(), length);
+            printf("Loading map file %s (%d bytes)\n", filename.c_str(), length);
 
             /* Read file data as a block to the buffer */
             mapFile.read((char*)buffer, length);
             if (!mapFile)
             {
-                LOGE("Error loading map file %s (%d bytes) to buffer", filename.c_str(), length);
+                printf("Error loading map file %s (%d bytes) to buffer\n", filename.c_str(), length);
                 delete[] buffer;
                 goto cleanup;
             }
@@ -3851,7 +3850,7 @@ int main(int argc, char *argv[])
             status = gDevice->SetLocalizationData(&listener, length, buffer);
             if (status != Status::SUCCESS)
             {
-                LOGE("Failed to set localization map, status = %s (0x%X)", statusToString(status).c_str(), status);
+                printf("Failed to set localization map, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                 mapFile.close();
                 delete[] buffer;
                 goto cleanup;
@@ -3862,37 +3861,37 @@ int main(int argc, char *argv[])
 
             while (gStatistics.localization[LocalizationTypeSet].isCompleted == false)
             {
-                LOGD("Pending for Set localization complete");
+                printf("Pending for Set localization complete\n");
                 std::this_thread::sleep_for(std::chrono::seconds(WAIT_FOR_LOCALIZATION_SEC));
             }
 
-            LOGD("Finished loading map file %s (%d bytes)", filename.c_str(), length);
+            printf("Finished loading map file %s (%d bytes)\n", filename.c_str(), length);
         }
         else
         {
-            LOGE("Error: File %s doesn't exists", filename.c_str());
+            printf("Error: File %s doesn't exists\n", filename.c_str());
             goto cleanup;
         }
     }
 
     if (gConfiguration.localization[LocalizationTypeReset].enabled == true)
     {
-        LOGD("Reseting localization map");
+        printf("Reseting localization map\n");
         status = gDevice->ResetLocalizationData(0);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed to reset localization map, status = %s (0x%X)", statusToString(status).c_str(), status);
+            printf("Failed to reset localization map, status = %s (0x%X)\n", statusToString(status).c_str(), status);
             goto cleanup;
         }
     }
 
     if (gConfiguration.gpioEnabled == true)
     {
-        LOGD("Setting GPIO control bitMask 0x%X", gConfiguration.gpioControlBitMask);
+        printf("Setting GPIO control bitMask 0x%X\n", gConfiguration.gpioControlBitMask);
         status = gDevice->SetGpioControl(gConfiguration.gpioControlBitMask);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed to set GPIO control, status = %s (0x%X)", statusToString(status).c_str(), status);
+            printf("Failed to set GPIO control, status = %s (0x%X)\n", statusToString(status).c_str(), status);
             goto cleanup;
         }
     }
@@ -3903,7 +3902,7 @@ int main(int argc, char *argv[])
         status = gDevice->SetExposureModeControl(modeControl);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed to set manual exposure, status = %s (0x%X)", statusToString(status).c_str(), status);
+            printf("Failed to set manual exposure, status = %s (0x%X)\n", statusToString(status).c_str(), status);
             goto cleanup;
         }
     }
@@ -3912,27 +3911,27 @@ int main(int argc, char *argv[])
     {
         gStatistics.reset();
 
-        LOGD(" ");
-        LOGD("Start/Stop Stream loop %d/%d", loop + 1, gConfiguration.maxLoop);
+        printf(" ");
+        printf("Start/Stop Stream loop %d/%d\n", loop + 1, gConfiguration.maxLoop);
 
-        LOGD("Starting Stream for %d seconds with profile:", gConfiguration.startStreamTime);
+        printf("Starting Stream for %d seconds with profile:\n", gConfiguration.startStreamTime);
         TrackingData::Profile profile;
         configureProfile(profile);
 
         if (gConfiguration.mode == "live")
         {
-            LOGI("Starting live mode");
+            printf("Starting live mode\n");
             status = gDevice->Start(&listener, &profile);
         }
         else if (gConfiguration.mode == "record")
         {
-            LOGI("Starting record mode");
+            printf("Starting record mode\n");
             mRecorder = std::shared_ptr<TrackingRecorder>(TrackingRecorder::CreateInstance(gDevice, &listener, gConfiguration.recordFilename.c_str(), gConfiguration.stereoMode));
             status = gDevice->Start(mRecorder.get(), &profile);
         }
         else if (gConfiguration.mode == "replay")
         {
-            LOGI("Starting replay mode");
+            printf("Starting replay mode\n");
             mPlayer = std::shared_ptr<TrackingPlayer>(TrackingPlayer::CreateInstance(&replayListener, gConfiguration.recordFilename.c_str()));
             if (!mPlayer->device_configure(gDevice, &listener, &profile))
             {
@@ -3942,7 +3941,7 @@ int main(int argc, char *argv[])
         }
         if (status != Status::SUCCESS)
         {
-            LOGE("Error: Start device failed, status = %s (0x%X)", statusToString(status).c_str(), status);
+            printf("Error: Start device failed, status = %s (0x%X)\n", statusToString(status).c_str(), status);
             goto cleanup;
         }
 
@@ -3955,12 +3954,12 @@ int main(int argc, char *argv[])
             uint8_t calibrated = 0;
             uint8_t needToCalibrate = 0;
 
-            LOGD("Waiting for %d controllers to get connected", gConfiguration.controllersCount);
+            printf("Waiting for %d controllers to get connected\n", gConfiguration.controllersCount);
             while ((connected < gConfiguration.controllersCount) && (timeout < MAX_WAIT_FOR_CONTROLLERS_MSEC))
             {
                 if (gStatistics.controller[Controller1].FWProgress % 100 == 0 && timeout % (WAIT_FOR_CONTROLLERS_MSEC * 10) == 0)
                 {
-                    LOGD("Currently connected %d/%d controllers... (giving up in %d sec)", connected, gConfiguration.controllersCount, (MAX_WAIT_FOR_CONTROLLERS_MSEC - timeout) / 1000);
+                    printf("Currently connected %d/%d controllers... (giving up in %d sec)\n", connected, gConfiguration.controllersCount, (MAX_WAIT_FOR_CONTROLLERS_MSEC - timeout) / 1000);
                 }
                 std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_FOR_CONTROLLERS_MSEC));
                 if (gStatistics.controller[Controller1].FWProgress % 100 != 0)
@@ -3978,12 +3977,12 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            LOGD("Currently connected %d/%d controllers...", connected, gConfiguration.controllersCount);
+            printf("Currently connected %d/%d controllers...\n", connected, gConfiguration.controllersCount);
 
             if (timeout >= MAX_WAIT_FOR_CONTROLLERS_MSEC)
             {
-                LOGE("Failed to connect to all controllers");
-                LOGD("Stopping Stream");
+                printf("Failed to connect to all controllers\n");
+                printf("Stopping Stream\n");
                 if (gConfiguration.mode == "replay")
                 {
                     mPlayer->stop();
@@ -3991,7 +3990,7 @@ int main(int argc, char *argv[])
                 status = gDevice->Stop();
                 if (status != Status::SUCCESS)
                 {
-                    LOGE("Error: Stop device failed, status = %s (0x%X)", statusToString(status).c_str(), status);
+                    printf("Error: Stop device failed, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                 }
 
                 gStatistics.print();
@@ -4009,13 +4008,13 @@ int main(int argc, char *argv[])
                 }
             }
 
-            LOGD("Waiting for %d controllers to get calibrated", needToCalibrate);
+            printf("Waiting for %d controllers to get calibrated\n", needToCalibrate);
 
             while ((calibrated < needToCalibrate) && (timeout < MAX_WAIT_FOR_CALIBRATED_CONTROLLERS_MSEC))
             {
                 if (timeout % (WAIT_FOR_CONTROLLERS_MSEC * 10) == 0)
                 {
-                    LOGD("Currently calibrated %d/%d controllers... (giving up in %d sec)", calibrated, needToCalibrate, (MAX_WAIT_FOR_CALIBRATED_CONTROLLERS_MSEC - timeout) / 1000);
+                    printf("Currently calibrated %d/%d controllers... (giving up in %d sec)\n", calibrated, needToCalibrate, (MAX_WAIT_FOR_CALIBRATED_CONTROLLERS_MSEC - timeout) / 1000);
                 }
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_FOR_CONTROLLERS_MSEC));
@@ -4029,7 +4028,7 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            LOGD("Currently calibrated %d/%d controllers...", calibrated, needToCalibrate);
+            printf("Currently calibrated %d/%d controllers...\n", calibrated, needToCalibrate);
 
             /* Sending Controller data to connected controllers */
             if (gConfiguration.controllerDataFilename.empty() == false)
@@ -4064,7 +4063,7 @@ int main(int argc, char *argv[])
                         status = gDevice->ControllerSendData(controllerData);
                         if (status != Status::SUCCESS)
                         {
-                            LOGE("Failed sending controller data, status = %s (0x%X)", statusToString(status).c_str(), status);
+                            printf("Failed sending controller data, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                             goto cleanup;
                         }
                     }
@@ -4078,16 +4077,16 @@ int main(int argc, char *argv[])
             {
                 if (gConfiguration.rssi[i].time != 0)
                 {
-                    LOGD("Start RSSI test on controller %d", i);
+                    printf("Start RSSI test on controller %d\n", i);
                     gDevice->ControllerRssiTestControl(i, true);
 
-                    LOGD("Sleeping (Start RSSI) for %d seconds...", gConfiguration.rssi[i].time);
+                    printf("Sleeping (Start RSSI) for %d seconds...\n", gConfiguration.rssi[i].time);
                     std::this_thread::sleep_for(std::chrono::seconds(gConfiguration.rssi[i].time));
 
-                    LOGD("Stop RSSI test on controller %d", i);
+                    printf("Stop RSSI test on controller %d\n", i);
                     gDevice->ControllerRssiTestControl(i, false);
 
-                    LOGD("Sleeping (Stop RSSI) for %d seconds...", STOP_STREAM_TIME_SEC);
+                    printf("Sleeping (Stop RSSI) for %d seconds...\n", STOP_STREAM_TIME_SEC);
                     std::this_thread::sleep_for(std::chrono::seconds(STOP_STREAM_TIME_SEC));
                 }
             }
@@ -4098,21 +4097,21 @@ int main(int argc, char *argv[])
             status = gDevice->SetExposure(gConfiguration.exposure);
             if (status != Status::SUCCESS)
             {
-                LOGE("Failed to set exposure with error, status = %s (0x%X)", statusToString(status).c_str(), status);
+                printf("Failed to set exposure with error, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                 goto cleanup;
             }
         }
 
         if (gConfiguration.nodeFilename.empty() == false)
         {
-            LOGD("Waiting for 6dof tracker confidence = 3 before setting static nodes");
+            printf("Waiting for 6dof tracker confidence = 3 before setting static nodes\n");
 
             while (gStatistics.pose[SixDofProfile0].trackerConfidence != 3)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(MAX_WAIT_FOR_STATIC_NODE_MSEC));
             }
 
-            LOGD("Setting all static nodes");
+            printf("Setting all static nodes\n");
 
             std::ifstream data(gConfiguration.nodeFilename);
             std::string line;
@@ -4148,7 +4147,7 @@ int main(int argc, char *argv[])
                     status = gDevice->SetStaticNode(guid, relativePose);
                     if (status != Status::SUCCESS)
                     {
-                        LOGE("Failed sending controller data, status = %s (0x%X)", statusToString(status).c_str(), status);
+                        printf("Failed sending controller data, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                         goto cleanup;
                     }
                 }
@@ -4197,19 +4196,19 @@ int main(int argc, char *argv[])
                     frame.timestamp = timestamp[0];
                     frame.arrivalTimeStamp = timestamp[1];
 
-                    LOGD("Sending velocimeter frame[%d]: AngularVelocity[%f, %f, %f], Timestamp %" PRId64 ", ArrivalTimestamp %" PRId64 "", frame.frameId, frame.angularVelocity.x, frame.angularVelocity.y, frame.angularVelocity.z, frame.timestamp, frame.arrivalTimeStamp);
+                    printf("Sending velocimeter frame[%d]: AngularVelocity[%f, %f, %f], Timestamp %lld, ArrivalTimestamp %lld\n", frame.frameId, frame.angularVelocity.x, frame.angularVelocity.y, frame.angularVelocity.z, frame.timestamp, frame.arrivalTimeStamp);
 
                     status = gDevice->SendFrame(frame);
                     if (status != Status::SUCCESS)
                     {
-                        LOGE("Failed sending velocimeter frame, status = %s (0x%X)", statusToString(status).c_str(), status);
+                        printf("Failed sending velocimeter frame, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                         goto cleanup;
                     }
                 }
             }
         }
 
-        LOGD("Sleeping (Start) for %d seconds...", gConfiguration.startStreamTime);
+        printf("Sleeping (Start) for %d seconds...\n", gConfiguration.startStreamTime);
         std::this_thread::sleep_for(std::chrono::seconds(gConfiguration.startStreamTime));
 
         if (gConfiguration.temperature.check == true)
@@ -4217,7 +4216,7 @@ int main(int argc, char *argv[])
             status = gDevice->GetTemperature(temperature);
             if (status != Status::SUCCESS)
             {
-                LOGE("Failed getting temperature, status = %s (0x%X)", statusToString(status).c_str(), status);
+                printf("Failed getting temperature, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                 goto cleanup;
             }
         }
@@ -4228,15 +4227,15 @@ int main(int argc, char *argv[])
             {
                 if (gStatistics.controller[i].isConnected == true)
                 {
-                    LOGD("Disconnecting Controller %d", i);
+                    printf("Disconnecting Controller %d\n", i);
                     status = gDevice->ControllerDisconnect(i);
                     if (status != Status::SUCCESS)
                     {
-                        LOGE("Error: Failed to disconnect from controller %d, status = %s (0x%X)", i, statusToString(status).c_str(), status);
+                        printf("Error: Failed to disconnect from controller %d, status = %s (0x%X)\n", i, statusToString(status).c_str(), status);
                     }
                     else
                     {
-                        LOGD("Sent Controller Disconnected Event on ControllerID = %d", i);
+                        printf("Sent Controller Disconnected Event on ControllerID = %d\n", i);
                         gStatistics.controller[i].isConnected = false;
                         gStatistics.runTime[i].stop();
                     }
@@ -4248,7 +4247,7 @@ int main(int argc, char *argv[])
 
         if (gDevice == NULL)
         {
-            LOGE("Error: device disappeared");
+            printf("Error: device disappeared\n");
             gStatistics.print();
             saveOutput();
             goto cleanup;
@@ -4256,7 +4255,7 @@ int main(int argc, char *argv[])
 
         if (gConfiguration.nodeFilename.empty() == false)
         {
-            LOGD("Getting all static nodes");
+            printf("Getting all static nodes\n");
 
             std::ifstream data(gConfiguration.nodeFilename);
             std::string line;
@@ -4290,14 +4289,14 @@ int main(int argc, char *argv[])
                     status = gDevice->GetStaticNode(guid, relativePose);
                     if (status != Status::SUCCESS)
                     {
-                        LOGE("Failed sending controller data, status = %s (0x%X)", statusToString(status).c_str(), status);
+                        printf("Failed sending controller data, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                         goto cleanup;
                     }
                 }
             }
         }
 
-        LOGD("Stopping Stream");
+        printf("Stopping Stream\n");
         if (gConfiguration.mode == "replay")
         {
             mPlayer->stop();
@@ -4305,13 +4304,13 @@ int main(int argc, char *argv[])
         status = gDevice->Stop();
         if (status != Status::SUCCESS)
         {
-            LOGE("Error: Stop device failed, status = %s (0x%X)", statusToString(status).c_str(), status);
+            printf("Error: Stop device failed, status = %s (0x%X)\n", statusToString(status).c_str(), status);
             gStatistics.print();
             saveOutput();
             goto cleanup;
         }
 
-        LOGD("Sleeping (Stop) for %d seconds...", STOP_STREAM_TIME_SEC);
+        printf("Sleeping (Stop) for %d seconds...\n", STOP_STREAM_TIME_SEC);
         std::this_thread::sleep_for(std::chrono::seconds(STOP_STREAM_TIME_SEC));
 
         if (gConfiguration.temperature.check == true)
@@ -4319,7 +4318,7 @@ int main(int argc, char *argv[])
             status = gDevice->GetTemperature(temperature);
             if (status != Status::SUCCESS)
             {
-                LOGE("Failed getting temperature, status = %s (0x%X)", statusToString(status).c_str(), status);
+                printf("Failed getting temperature, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                 goto cleanup;
             }
         }
@@ -4331,14 +4330,14 @@ int main(int argc, char *argv[])
         {
             if (gStatistics.check() == false)
             {
-                LOGD("Statistics checker passed");
+                printf("Statistics checker passed\n");
             }
             else
             {
-                LOGE("Statistics checker failed");
+                printf("Statistics checker failed\n");
                 if (gConfiguration.errorExit == true)
                 {
-                    LOGE("Exiting...");
+                    printf("Exiting...\n");
                     exit(EXIT_FAILURE);
                 }
             }
@@ -4348,22 +4347,22 @@ int main(int argc, char *argv[])
         {
             if (resetCount < gConfiguration.resetLoop)
             {
-                LOGD("Reset loop %d/%d", resetCount + 1, gConfiguration.resetLoop);
+                printf("Reset loop %d/%d\n", resetCount + 1, gConfiguration.resetLoop);
 
                 gStatistics.reset();
                 status = gDevice->Reset();
                 if (status != Status::SUCCESS)
                 {
-                    LOGE("Error: Reset device failed, status = %s (0x%X)", statusToString(status).c_str(), status);
+                    printf("Error: Reset device failed, status = %s (0x%X)\n", statusToString(status).c_str(), status);
                     goto cleanup;
                 }
 
-                LOGD("Sleeping (Reset) for %d seconds...", RESET_DEVICE_TIME_SEC);
+                printf("Sleeping (Reset) for %d seconds...\n", RESET_DEVICE_TIME_SEC);
                 std::this_thread::sleep_for(std::chrono::seconds(RESET_DEVICE_TIME_SEC));
 
                 while (gDevice == 0)
                 {
-                    LOGD("Looking for device (after reset) ...");
+                    printf("Looking for device (after reset) ...\n");
                     std::this_thread::sleep_for(std::chrono::seconds(WAIT_FOR_DEVICE_SEC));
                 }
                 resetCount++;
@@ -4384,34 +4383,34 @@ int main(int argc, char *argv[])
         mapFile.open(filename, std::fstream::out | std::fstream::binary | std::fstream::trunc);
         if (!mapFile.is_open())
         {
-            LOGE("Failed creating file %s", filename.c_str());
+            printf("Failed creating file %s\n", filename.c_str());
             goto cleanup;
         }
 
-        LOGD("Getting localization map into file %s", filename.c_str());
+        printf("Getting localization map into file %s\n", filename.c_str());
 
         status = gDevice->GetLocalizationData(&listener);
         if (status != Status::SUCCESS)
         {
-            LOGE("Failed to get localization map, status = %s (0x%X)", statusToString(status).c_str(), status);
+            printf("Failed to get localization map, status = %s (0x%X)\n", statusToString(status).c_str(), status);
             mapFile.close();
             goto cleanup;
         }
 
         while ((gStatistics.localization[LocalizationTypeGet].isCompleted == false) && (getLocalizationTime <= MAX_WAIT_FOR_LOCALIZATION_SEC))
         {
-            LOGD("Pending for Get localization complete... (giving up in %d sec)", (MAX_WAIT_FOR_LOCALIZATION_SEC - getLocalizationTime));
+            printf("Pending for Get localization complete... (giving up in %d sec)\n", (MAX_WAIT_FOR_LOCALIZATION_SEC - getLocalizationTime));
             std::this_thread::sleep_for(std::chrono::seconds(WAIT_FOR_LOCALIZATION_SEC));
             getLocalizationTime += WAIT_FOR_LOCALIZATION_SEC;
         }
 
         if (gStatistics.localization[LocalizationTypeGet].isCompleted == true)
         {
-            LOGD("Finished getting map file %s (%d bytes)", filename.c_str(), gStatistics.localization[LocalizationTypeGet].fileSize);
+            printf("Finished getting map file %s (%lld bytes)\n", filename.c_str(), gStatistics.localization[LocalizationTypeGet].fileSize);
         }
         else
         {
-            LOGE("Failed getting map file %s (%d bytes)", filename.c_str(), gStatistics.localization[LocalizationTypeGet].fileSize);
+            printf("Failed getting map file %s (%lld bytes)\n", filename.c_str(), gStatistics.localization[LocalizationTypeGet].fileSize);
         }
 
         mapFile.close();
