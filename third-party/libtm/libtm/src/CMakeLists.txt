@@ -3,7 +3,11 @@ cmake_policy(SET CMP0015 NEW)
 
 project(tm)
 
-include_directories(${LIBTM_INCLUDE_DIR})
+include_directories(${LIBTM_INCLUDE_DIR}
+    ${INFRA_INCLUDE_DIR}
+    ${LIBUSB_LOCAL_INCLUDE_PATH}
+	${CMAKE_SOURCE_DIR}/src
+)
 
 #Source Files
 set(SOURCE_FILES
