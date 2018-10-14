@@ -53,7 +53,7 @@ namespace perc {
 
         struct CheshireCat;
         std::unique_ptr<CheshireCat> mData;
-
+        void handleThread(Handle handle, std::mutex handleMutex);
         // Prevent assignment and initialization.
         void operator= (const Poller &) = delete;
         Poller(const Poller &) = delete;

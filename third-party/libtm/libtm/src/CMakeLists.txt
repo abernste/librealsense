@@ -44,7 +44,7 @@ set(SOURCE_FILES
     infra/Fence.h
     infra/EventHandler.h
     infra/Poller.h
-    infra/Poller_${OS}.cpp
+    infra/Poller.cpp
     infra/Dispatcher.h
     infra/Dispatcher.cpp
     infra/Fsm.h

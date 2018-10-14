@@ -33,15 +33,17 @@ Copyright(c) 2017 Intel Corporation. All Rights Reserved.
 
 namespace perc {
 
-#ifdef _WIN32
-    typedef HANDLE  Handle;
-#define ILLEGAL_HANDLE NULL
-#else
-    typedef int     Handle;
-#define ILLEGAL_HANDLE (-1)
+//#ifdef _WIN32
+//    typedef HANDLE  Handle;
+//#define ILLEGAL_HANDLE NULL
+//#else
+//    typedef int     Handle;
+//#define ILLEGAL_HANDLE (-1)
+//
+//#endif
 
-#endif
-
+    typedef std::shared_ptr<std::condition_variable>  Handle;
+    #define ILLEGAL_HANDLE (nullptr)
     #define MAC_ADDRESS_SIZE 6
     #define CONTROLLER_SENSOR_DATA_SIZE 6
 
