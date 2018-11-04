@@ -2,6 +2,8 @@
 
 -----------------
 
+<div class='modelo-wrapper'> <div style="width: 100%; padding-bottom: 56.25%; position: relative"> <div style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"> <iframe src="https://app.modelo.io/embedded/JL4lg3X77I?viewport=false&autoplay=false" style="width:100%;height:100%;" frameborder="0" mozallowfullscreen webkitallowfullscreen allowfullscreen ></iframe> </div> </div> <p style="font-size: 13px; font-weight: bold; margin: 10px 10px 10px 10px; color: #666666;">T265_camera_bracket_stand<span style="font-weight: normal;">By</span> Amit bern<a href="http://www.modelo.io?utm_source=embed&utm_medium=embedfooter&utm_campaign=model%20embed%20footer" target="_blank" style="display: inline-block; margin-left: 6px; padding-left: 8px; border-left: 1px solid #e2e2e2; color: #e8776f; cursor: pointer; text-decoration: none;">Modelo »</a> </p> </div>
+
 Linux/MacOS | Windows |
 -------- | ------------ |
 [![Build Status](https://travis-ci.org/IntelRealSense/librealsense.svg?branch=development)](https://travis-ci.org/IntelRealSense/librealsense) | [![Build status](https://ci.appveyor.com/api/projects/status/6u04bgmpwfejpgo8?svg=true)](https://ci.appveyor.com/project/dorodnic/librealsense-s4xnv) |
